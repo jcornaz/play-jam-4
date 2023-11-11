@@ -17,13 +17,6 @@ keywords = []
 bundle-id = "com.github.jcornaz.play-jam-4"
 
 [package.metadata.playdate.assets]
-"img/player.png" = "assets/player.png"
-"img/turret/base.png" = "assets/turret/base.png"
-"img/turret/cannon-1.png" = "assets/turret/cannon-1.png"
-"img/turret/cannon-2.png" = "assets/turret/cannon-2.png"
-"img/enemies/spider.png" = "assets/enemies/spider.png"
-"img/bullet.png" = "assets/bullet.png"
-"img/explosion-table-5.png" = "assets/explosion-table-5.png"
 
 [lib]
 crate-type = [
