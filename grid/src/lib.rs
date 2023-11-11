@@ -32,6 +32,14 @@ impl<T> Grid<T> {
         }
     }
 
+    pub fn width(&self) -> usize {
+        self.width
+    }
+
+    pub fn height(&self) -> usize {
+        self.height
+    }
+
     pub fn get(&self, coord: Coord) -> Option<&T> {
         self.cells.get(self.index_of(coord)?)
     }
@@ -56,6 +64,17 @@ impl<T> Grid<T> {
 impl<T: Default> Grid<T> {
     pub fn new(width: usize, height: usize) -> Self {
         Self::new_with(width, height, || T::default())
+    }
+
+    pub fn from_iter(width: usize, height: usize, iter: impl IntoIterator<Item = T>) -> Self {
+        let len = width * height;
+        let mut cells: Vec<T> = iter.into_iter().take(len).collect();
+        cells.resize_with(len, || T::default());
+        Self {
+            cells,
+            width,
+            height,
+        }
     }
 }
 
