@@ -6,6 +6,7 @@ mod level;
 
 use core::ptr::NonNull;
 
+use crankit_graphics::Color;
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
 use level::Level;
@@ -30,6 +31,7 @@ impl Game {
     fn update_and_draw(&mut self) {
         let _delta_time = reset_elapsed_time();
         let _buttons = button_state();
+        crankit_graphics::clear(Color::black());
         self.level.walls_image.draw([0, 0]);
     }
 }
