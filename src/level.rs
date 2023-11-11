@@ -2,12 +2,11 @@ use alloc::format;
 use anyhow::anyhow;
 use crankit_graphics::image::Image;
 use grid::Grid;
-
-use crate::Vec2;
+use math2d::Point;
 
 pub struct Level {
     pub walls_image: Image,
-    pub player_start: Vec2,
+    pub player_start: Point,
     pub grid: Grid<Cell>,
 }
 
@@ -17,7 +16,7 @@ impl Level {
             .map_err(|err| anyhow!("Cannot load level image {num}: {err}"))?;
         let data = ldtk::Data::load(num)?;
         let player_start = data.entities.player[0];
-        let grid = ldtk::load_grid(num, data.width, data.height)?;
+        let grid = ldtk::load_grid(num, data.width / 16, data.height / 16)?;
         Ok(Self {
             walls_image,
             player_start,
@@ -34,10 +33,9 @@ pub enum Cell {
 }
 
 mod ldtk {
-    use grid::Grid;
-
-    use crate::Vec2;
     use anyhow::anyhow;
+    use grid::Grid;
+    use math2d::Point;
     use serde::Deserialize;
 
     use super::Cell;
@@ -70,7 +68,7 @@ mod ldtk {
 
     #[derive(Debug, Clone, Deserialize)]
     pub struct Entities {
-        pub player: [Vec2; 1],
+        pub player: [Point; 1],
     }
 
     pub fn load_grid(level_num: usize, width: usize, height: usize) -> anyhow::Result<Grid<Cell>> {

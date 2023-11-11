@@ -11,10 +11,24 @@ pub struct Point<T = f32> {
 
 impl Point<f32> {
     pub const ORIGIN: Self = Self::new(0., 0.);
+
+    pub fn as_point_i32(self) -> Point<i32> {
+        Point {
+            x: self.x as i32,
+            y: self.y as i32,
+        }
+    }
 }
 
 impl Point<i32> {
     pub const ORIGIN: Self = Self::new(0, 0);
+
+    pub fn as_point_f32(self) -> Point<f32> {
+        Point {
+            x: self.x as f32,
+            y: self.y as f32,
+        }
+    }
 }
 
 impl<T> Point<T> {

@@ -110,6 +110,7 @@ dependencies = [
  "crankit-input",
  "crankit-time",
  "grid",
+ "libm",
  "math2d",
  "playdate-sys",
  "serde",

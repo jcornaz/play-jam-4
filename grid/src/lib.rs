@@ -54,7 +54,7 @@ impl<T> Grid<T> {
         Some(cell)
     }
 
-    fn index_of(&self, Coord { x, y }: Coord) -> Option<usize> {
+    pub fn index_of(&self, Coord { x, y }: Coord) -> Option<usize> {
         let x: usize = x.try_into().ok().filter(|x| *x < self.width)?;
         let y: usize = y.try_into().ok().filter(|y| *y < self.height)?;
         Some(self.width * y + x)

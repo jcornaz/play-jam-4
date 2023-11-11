@@ -11,8 +11,9 @@ use core::ptr::NonNull;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
-use grid::Grid;
+use grid::{Coord, Grid};
 use level::{Cell, Level};
+use math2d::Point;
 use playdate_sys::{
     ffi::{PDSystemEvent as SystemEvent, PlaydateAPI},
     ll_symbols, EventLoopCtrl,
@@ -49,6 +50,27 @@ impl Game {
         self.player.update(delta_time, buttons, &self.grid);
         self.player.draw(&self.player_images);
     }
+}
+
+const TILE_SIZE: f32 = 16.0;
+
+fn _ray_cast_grid_coords(source: Point, direction: Vec2) -> impl Iterator<Item = Coord> {
+    let from = Vec2::from(source) / TILE_SIZE;
+    let to = from + (direction / TILE_SIZE);
+    let min_x = libm::floorf(from.x).min(libm::floorf(to.x)) as i32;
+    let max_x = libm::ceilf(from.x).max(libm::ceilf(to.x)) as i32;
+    let min_y = libm::floorf(from.y).min(libm::floorf(to.y)) as i32;
+    let max_y = libm::ceilf(from.y).max(libm::ceilf(to.y)) as i32;
+    (min_x..=max_x).flat_map(move |x| (min_y..=max_y).map(move |y| Coord::new(x, y)))
+}
+
+fn world_to_coord(point: Point) -> Coord {
+    let v = Vec2::from(point) / TILE_SIZE;
+    Coord::new(v.x as i32, v.y as i32)
+}
+
+fn coord_to_world(coord: Coord) -> Point {
+    (Vec2::new(coord.x as f32, coord.y as f32) * TILE_SIZE).into()
 }
 
 static mut GAME: Option<Game> = None;
