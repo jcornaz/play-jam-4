@@ -8,7 +8,7 @@ use crate::Vec2;
 pub struct Level {
     pub walls_image: Image,
     pub player_start: Vec2,
-    pub cells: Grid<Cell>,
+    pub grid: Grid<Cell>,
 }
 
 impl Level {
@@ -21,7 +21,7 @@ impl Level {
         Ok(Self {
             walls_image,
             player_start,
-            cells: grid,
+            grid,
         })
     }
 }

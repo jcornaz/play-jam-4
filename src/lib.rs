@@ -2,6 +2,7 @@
 
 extern crate alloc;
 
+mod animation;
 mod level;
 mod player;
 
@@ -10,7 +11,8 @@ use core::ptr::NonNull;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
-use level::Level;
+use grid::Grid;
+use level::{Cell, Level};
 use playdate_sys::{
     ffi::{PDSystemEvent as SystemEvent, PlaydateAPI},
     ll_symbols, EventLoopCtrl,
@@ -23,6 +25,7 @@ struct Game {
     level_image: Image,
     player_images: player::Images,
     player: Player,
+    grid: Grid<Cell>,
 }
 
 impl Game {
@@ -34,14 +37,16 @@ impl Game {
             level_image: level.walls_image,
             player,
             player_images,
+            grid: level.grid,
         }
     }
 
     fn update_and_draw(&mut self) {
-        let _delta_time = reset_elapsed_time();
-        let _buttons = button_state();
+        let delta_time = reset_elapsed_time();
+        let buttons = button_state();
         crankit_graphics::clear(Color::black());
         self.level_image.draw([0, 0]);
+        self.player.update(delta_time, buttons, &self.grid);
         self.player.draw(&self.player_images);
     }
 }
