@@ -40,24 +40,27 @@ impl<T> Grid<T> {
         self.height
     }
 
-    pub fn get(&self, coord: Coord) -> Option<&T> {
+    pub fn get(&self, coord: impl Into<[usize; 2]>) -> Option<&T> {
         self.cells.get(self.index_of(coord)?)
     }
 
-    pub fn get_mut(&mut self, coord: Coord) -> Option<&mut T> {
+    pub fn get_mut(&mut self, coord: impl Into<[usize; 2]>) -> Option<&mut T> {
         let index = self.index_of(coord)?;
         self.cells.get_mut(index)
     }
 
-    pub fn set(&mut self, coord: Coord, mut cell: T) -> Option<T> {
+    pub fn set(&mut self, coord: impl Into<[usize; 2]>, mut cell: T) -> Option<T> {
         core::mem::swap(self.get_mut(coord)?, &mut cell);
         Some(cell)
     }
 
-    pub fn index_of(&self, Coord { x, y }: Coord) -> Option<usize> {
-        let x: usize = x.try_into().ok().filter(|x| *x < self.width)?;
-        let y: usize = y.try_into().ok().filter(|y| *y < self.height)?;
-        Some(self.width * y + x)
+    pub fn index_of(&self, coord: impl Into<[usize; 2]>) -> Option<usize> {
+        let [x, y] = coord.into();
+        if x < self.width && y < self.height {
+            Some(self.width * y + x)
+        } else {
+            None
+        }
     }
 }
 
@@ -75,41 +78,5 @@ impl<T: Default> Grid<T> {
             width,
             height,
         }
-    }
-}
-
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
-pub struct Coord {
-    pub x: i32,
-    pub y: i32,
-}
-
-impl Coord {
-    pub const fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
-    }
-}
-
-impl From<[i32; 2]> for Coord {
-    fn from([x, y]: [i32; 2]) -> Self {
-        Self { x, y }
-    }
-}
-
-impl From<Coord> for [i32; 2] {
-    fn from(Coord { x, y }: Coord) -> Self {
-        [x, y]
-    }
-}
-
-impl From<(i32, i32)> for Coord {
-    fn from((x, y): (i32, i32)) -> Self {
-        Self { x, y }
-    }
-}
-
-impl From<Coord> for (i32, i32) {
-    fn from(Coord { x, y }: Coord) -> Self {
-        (x, y)
     }
 }

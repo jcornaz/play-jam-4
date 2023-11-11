@@ -1,12 +1,13 @@
 use core::time::Duration;
 
 use anyhow::anyhow;
+
 use crankit_graphics::image::Image;
 use crankit_input::{Button, ButtonState};
 use grid::Grid;
 use math2d::Point;
 
-use crate::{animation::Animation, coord_to_world, level::Cell, world_to_coord, Vec2};
+use crate::{animation::Animation, coord_to_world, level::Cell, world_to_coord, Vector};
 
 const RUN_SPEED: f32 = 200.;
 const ANIMATION_FPS: f32 = 10.0;
@@ -63,7 +64,8 @@ impl Player {
                 State::Idle => self.state = State::running(),
                 State::Running { animation } => animation.update(delta_time),
             };
-            let delta = Vec2::X * (horizontal_input as f32 * RUN_SPEED * delta_time.as_secs_f32());
+            let delta =
+                Vector::X * (horizontal_input as f32 * RUN_SPEED * delta_time.as_secs_f32());
             let mut next_pos = self.position + delta;
             let next_coord = world_to_coord(next_pos);
             if let Some(Cell::Terrain) = grid.get(next_coord) {
