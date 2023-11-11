@@ -24,7 +24,7 @@ where
 {
     /// Returns the dot product of the two vector (aka projection)
     #[must_use]
-    fn dot(self, rhs: Self) -> T {
+    pub fn dot(self, rhs: Self) -> T {
         self.x * rhs.x + self.y * rhs.y
     }
 
@@ -33,7 +33,7 @@ where
     /// This is usually faster than getting the actual magnitude as it doesn't require
     /// a square-root operation
     #[must_use]
-    fn magnitude_squared(self) -> T {
+    pub fn magnitude_squared(self) -> T {
         self.dot(self)
     }
 }
@@ -63,14 +63,16 @@ impl Vector<f32> {
     /// Consider using [`Self::magnitude_squared`] instead if possible to avoid having to perform
     /// a square root operation
     #[must_use]
+    #[cfg(any(feature = "std", feature = "libm"))]
     pub fn magnitude(self) -> f32 {
-        libm::sqrtf(self.magnitude_squared())
+        crate::sqrt(self.magnitude_squared())
     }
 
     /// Return the normalized version of the vector if possible
     ///
     /// If the vector cannot be normalized, returns `None` (e.g. if the vector has a magnitude of zero)
     #[must_use]
+    #[cfg(any(feature = "std", feature = "libm"))]
     pub fn normalize(self) -> Option<Self> {
         let recip = self.magnitude().recip();
         if recip.is_finite() && recip > 0.0 {
@@ -255,10 +257,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::angle::{Degrees, Radians};
-    use core::f32;
     use rstest::rstest;
+
+    #[cfg(any(feature = "std", feature = "libm"))]
+    use crate::angle::{Degrees, Radians};
+
+    use super::*;
 
     #[rstest]
     #[case(Vector::<i32>::ZERO, Vector::<i32>::ZERO, Vector::<i32>::ZERO)]
@@ -295,12 +299,13 @@ mod tests {
     #[case(Vector::<f32>::X, Degrees(0.), Vector::<f32>::X)]
     #[case(Vector::<f32>::X, Degrees(360.), Vector::<f32>::X)]
     #[case(Vector::<f32>::X, Radians(0.), Vector::<f32>::X)]
-    #[case(Vector::<f32>::X, Radians(f32::consts::PI * 2.), Vector::<f32>::X)]
+    #[case(Vector::<f32>::X, Radians(core::f32::consts::PI * 2.), Vector::<f32>::X)]
     #[case(Vector::<f32>::X, Degrees(90.), Vector::<f32>::Y)]
     #[case(Vector::<f32>::X, Degrees(180.), -Vector::<f32>::X)]
-    #[case(Vector::<f32>::X, Radians(f32::consts::PI), -Vector::<f32>::X)]
+    #[case(Vector::<f32>::X, Radians(core::f32::consts::PI), -Vector::<f32>::X)]
     #[case(Vector::<f32>::X, Degrees(270.), -Vector::<f32>::Y)]
     #[case(Vector::<f32>::X, Degrees(45.), Vector::<f32>::new(1./2_f32.sqrt(), 1./2_f32.sqrt()))]
+    #[cfg(any(feature = "std", feature = "libm"))]
     fn test_rotate(
         #[case] source: Vector,
         #[case] angle: impl Angle,
@@ -315,6 +320,7 @@ mod tests {
     #[case(Vector::<f32>::X, Vector::<f32>::X)]
     #[case(Vector::<f32>::Y, Vector::<f32>::Y)]
     #[case(Vector::new(2., 0.), Vector::<f32>::X)]
+    #[cfg(any(feature = "std", feature = "libm"))]
     fn normalize_should_succeed(#[case] vector: Vector, #[case] expected_normal: Vector) {
         let normal = vector.normalize().unwrap();
         assert!((normal.x - expected_normal.x).abs() < 0.000001);
@@ -322,6 +328,7 @@ mod tests {
     }
 
     #[rstest]
+    #[cfg(any(feature = "std", feature = "libm"))]
     fn normalize_should_returns_none_if_cannot_be_normalized(
         #[values(Vector::<f32>::ZERO, Vector::new(f32::INFINITY, 0.), Vector::new(f32::NAN, 0.))]
         vector: Vector,

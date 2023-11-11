@@ -18,13 +18,14 @@ impl From<Radians> for f32 {
     }
 }
 
+#[cfg(any(feature = "std", feature = "libm"))]
 impl Angle for Radians {
     fn cos(self) -> f32 {
-        libm::cosf(self.0)
+        crate::cos(self.0)
     }
 
     fn sin(self) -> f32 {
-        libm::sinf(self.0)
+        crate::sin(self.0)
     }
 }
 
@@ -55,6 +56,7 @@ impl From<Radians> for Degrees {
     }
 }
 
+#[cfg(any(feature = "std", feature = "libm"))]
 impl Angle for Degrees {
     fn cos(self) -> f32 {
         Radians::from(self).cos()

@@ -27,7 +27,7 @@ bundle-id = "com.github.jcornaz.play-jam-4"
 
 [lib]
 crate-type = [
-    "dylib",     # for simulator
+    "dylib", # for simulator
     "staticlib", # for hardware
 ]
 
@@ -36,7 +36,7 @@ crankit-input = { path = "crankit/input" }
 crankit-graphics = { path = "crankit/graphics" }
 crankit-time = { path = "crankit/time" }
 timer = { path = "timer" }
-math2d = { path = "math2d" }
+math2d = { path = "math2d", default-features = false, features = ["libm", "point"] }
 playdate-sys = { version = "0.2.10", default-features = false, features = ["lang-items", "entry-point"] }
 
 [dev-dependencies]

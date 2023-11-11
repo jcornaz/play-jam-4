@@ -6,8 +6,13 @@ edition = "2021"
 repository = "https://github.com/jcornaz/play-jam-4"
 description = "A simple math library for 2d geometry"
 
+[features]
+default = ["std", "point"]
+std = []
+point = []
+
 [dependencies]
-libm = "0.2.8"
+libm = { version = "0.2.8", optional = true }
 
 [dev-dependencies]
 rstest = { version = "0.18.2", default-features = false }
