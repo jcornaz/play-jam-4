@@ -1,0 +1,63 @@
+{
+	"identifier": "level_0",
+	"uniqueIdentifer": "90324e20-6280-11ee-bd14-83d25d4420ba",
+	"x": 0,
+	"y": 0,
+	"width": 400,
+	"height": 240,
+	"bgColor": "#696A79",
+	"neighbourLevels": [],
+	"customFields" : {},
+	"layers": [
+		"environment.png"
+	],
+	"entities": {
+		"player": [
+			{
+				"id": "player",
+				"iid": "6bcb0650-6280-11ee-ac92-8f27fa481a99",
+				"layer": "player",
+				"x": 24,
+				"y": 200,
+				"width": 16,
+				"height": 16,
+				"color": 14120515,
+				"customFields" : {}
+			}
+		],
+		"lift": [
+			{
+				"id": "lift",
+				"iid": "fb32ddf0-6280-11ee-ac92-ab0546874287",
+				"layer": "lifts",
+				"x": 344,
+				"y": 208,
+				"width": 48,
+				"height": 48,
+				"color": 12470831,
+				"customFields": {
+					"Arrival": {
+						"cx": 21,
+						"cy": 3
+					}
+				}
+			},
+			{
+				"id": "lift",
+				"iid": "140563c0-6280-11ee-ac92-d93757eb6d8e",
+				"layer": "lifts",
+				"x": 72,
+				"y": 112,
+				"width": 48,
+				"height": 48,
+				"color": 12470831,
+				"customFields": {
+					"Arrival": {
+						"cx": 4,
+						"cy": 0
+					}
+				}
+			}
+		]
+	}
+}
