@@ -18,6 +18,7 @@ bundle-id = "com.github.jcornaz.play-jam-4"
 
 [package.metadata.playdate.assets]
 "img/levels/level_0.png" = "assets/levels/simplified/level_0/_composite.png"
+"img/player-sheet.png" = "assets/player-sheet.png"
 
 [lib]
 crate-type = [

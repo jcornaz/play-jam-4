@@ -3,10 +3,11 @@
 extern crate alloc;
 
 mod level;
+mod player;
 
 use core::ptr::NonNull;
 
-use crankit_graphics::Color;
+use crankit_graphics::{image::Image, Color};
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
 use level::Level;
@@ -14,17 +15,25 @@ use playdate_sys::{
     ffi::{PDSystemEvent as SystemEvent, PlaydateAPI},
     ll_symbols, EventLoopCtrl,
 };
+use player::Player;
 
 type Vec2 = math2d::Vector;
 
 struct Game {
-    level: Level,
+    level_image: Image,
+    player_images: player::Images,
+    player: Player,
 }
 
 impl Game {
     fn new() -> Self {
+        let level = Level::load(0).unwrap();
+        let player_images = player::Images::load().unwrap();
+        let player = Player::new(level.player_start);
         Self {
-            level: Level::load(0).unwrap(),
+            level_image: level.walls_image,
+            player,
+            player_images,
         }
     }
 
@@ -32,7 +41,8 @@ impl Game {
         let _delta_time = reset_elapsed_time();
         let _buttons = button_state();
         crankit_graphics::clear(Color::black());
-        self.level.walls_image.draw([0, 0]);
+        self.level_image.draw([0, 0]);
+        self.player.draw(&self.player_images);
     }
 }
 
