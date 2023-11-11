@@ -16,8 +16,8 @@ use level::{Cell, Level};
 use player::Player;
 
 type Vector = math2d::Vector<f32>;
-type Point = math2d::Point<f32>;
-type CellCoord = [usize; 2];
+
+const TILE_SIZE: f32 = 16.0;
 
 struct Game {
     level_image: Image,
@@ -47,17 +47,6 @@ impl crankit_game_loop::Game for Game {
         self.player.update(delta_time, buttons, &self.grid);
         self.player.draw(&self.player_images);
     }
-}
-
-const TILE_SIZE: f32 = 16.0;
-
-fn world_to_coord(point: Point) -> CellCoord {
-    let v = Vector::from(point) / TILE_SIZE;
-    [v.x as usize, v.y as usize]
-}
-
-fn coord_to_world([x, y]: CellCoord) -> Point {
-    (Vector::new(x as f32, y as f32) * TILE_SIZE).into()
 }
 
 game_loop!(Game);

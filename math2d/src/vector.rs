@@ -91,6 +91,13 @@ impl Vector<f32> {
             y: self.y as i32,
         }
     }
+
+    pub fn as_vector_usize(self) -> Vector<usize> {
+        Vector {
+            x: self.x as usize,
+            y: self.y as usize,
+        }
+    }
 }
 
 impl Vector<i32> {

@@ -5,20 +5,16 @@ use anyhow::anyhow;
 use crankit_graphics::image::Image;
 use crankit_input::{Button, ButtonState};
 use grid::Grid;
-use math2d::Point;
 
-use crate::{animation::Animation, coord_to_world, level::Cell, world_to_coord, Vector};
+use crate::{animation::Animation, level::Cell, Vector, TILE_SIZE};
 
-const RUN_SPEED: f32 = 200.;
+const RUN_SPEED: f32 = 5.;
 const ANIMATION_FPS: f32 = 10.0;
 const RUN_ANIMATION_LEN: usize = 4;
-const HALF_WIDTH: f32 = 6.0;
 
 pub struct Images {
     idle: Image,
     running: [Image; RUN_ANIMATION_LEN],
-    _falling: Image,
-    _dying: Image,
 }
 
 impl Images {
@@ -27,7 +23,7 @@ impl Images {
             .map_err(|err| anyhow!("cannot load player images: {err}"))?;
         let mut images = sheet.split_columns(7);
         let idle = images.next().unwrap();
-        let _running = [
+        let running = [
             images.next().unwrap(),
             images.next().unwrap(),
             images.next().unwrap(),
@@ -35,29 +31,24 @@ impl Images {
         ];
         let _falling = images.next().unwrap();
         let _dying = images.next().unwrap();
-        Ok(Self {
-            idle,
-            running: _running,
-            _falling,
-            _dying,
-        })
+        Ok(Self { idle, running })
     }
 }
 
 pub struct Player {
-    position: Point,
+    position: Vector,
     state: State,
 }
 
 impl Player {
-    pub fn new(position: Point) -> Self {
+    pub fn new(position: Vector) -> Self {
         Self {
             position,
             state: State::Idle,
         }
     }
 
-    pub fn update(&mut self, delta_time: Duration, buttons: ButtonState, grid: &Grid<Cell>) {
+    pub fn update(&mut self, delta_time: Duration, buttons: ButtonState, _grid: &Grid<Cell>) {
         let horizontal_input = horizontal_input(buttons);
         if horizontal_input != 0 {
             match &mut self.state {
@@ -66,12 +57,7 @@ impl Player {
             };
             let delta =
                 Vector::X * (horizontal_input as f32 * RUN_SPEED * delta_time.as_secs_f32());
-            let mut next_pos = self.position + delta;
-            let next_coord = world_to_coord(next_pos);
-            if let Some(Cell::Terrain) = grid.get(next_coord) {
-                next_pos.x = coord_to_world(next_coord).x - HALF_WIDTH
-            }
-            self.position = next_pos;
+            self.position += delta;
         } else {
             self.state = State::Idle;
         }
@@ -82,7 +68,9 @@ impl Player {
             State::Idle => &images.idle,
             State::Running { animation } => &images.running[animation.current_frame],
         };
-        image.draw_from_center(self.position.as_point_i32());
+        let [w, h] = image.size();
+        let pos = (self.position * TILE_SIZE).as_vector_i32() - math2d::Vector::new(w, h) / 2;
+        image.draw_from_center(pos);
     }
 }
 
