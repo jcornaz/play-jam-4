@@ -10,9 +10,12 @@ description = "A simple math library for 2d geometry"
 default = ["std", "point"]
 std = []
 point = []
+libm = ["dep:libm"]
+serde = ["dep:serde"]
 
 [dependencies]
 libm = { version = "0.2.8", optional = true }
+serde = { version = "1.0.192", default-features = false, features = ["derive"], optional = true }
 
 [dev-dependencies]
 rstest = { version = "0.18.2", default-features = false }

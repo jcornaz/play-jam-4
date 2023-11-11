@@ -2,6 +2,7 @@ use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAss
 
 use crate::angle::Angle;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Debug, Copy, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Vector<T = f32> {
     /// X-axis component

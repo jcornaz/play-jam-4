@@ -14,6 +14,8 @@ use playdate_sys::{
     ll_symbols, EventLoopCtrl,
 };
 
+type Vec2 = math2d::Vector;
+
 struct Game {
     level: Level,
 }
@@ -28,7 +30,7 @@ impl Game {
     fn update_and_draw(&mut self) {
         let _delta_time = reset_elapsed_time();
         let _buttons = button_state();
-        self.level.draw();
+        self.level.walls_image.draw([0, 0]);
     }
 }
 

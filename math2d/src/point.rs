@@ -2,6 +2,7 @@ use core::ops::{Add, AddAssign, Sub, SubAssign};
 
 use crate::vector::Vector;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Debug, Copy, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Point<T = f32> {
     pub x: T,

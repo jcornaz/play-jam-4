@@ -3,6 +3,8 @@ pub trait Angle: Copy {
     fn sin(self) -> f32;
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Radians(pub f32);
 
@@ -29,6 +31,8 @@ impl Angle for Radians {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Degrees(pub f32);
 
