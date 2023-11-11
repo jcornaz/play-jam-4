@@ -2,25 +2,33 @@
 
 extern crate alloc;
 
+mod level;
+
 use core::ptr::NonNull;
 
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
+use level::Level;
 use playdate_sys::{
     ffi::{PDSystemEvent as SystemEvent, PlaydateAPI},
     ll_symbols, EventLoopCtrl,
 };
 
-struct Game {}
+struct Game {
+    level: Level,
+}
 
 impl Game {
     fn new() -> Self {
-        Self {}
+        Self {
+            level: Level::load(0).unwrap(),
+        }
     }
 
     fn update_and_draw(&mut self) {
         let _delta_time = reset_elapsed_time();
         let _buttons = button_state();
+        self.level.draw();
     }
 }
 
