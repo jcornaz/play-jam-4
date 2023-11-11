@@ -1,0 +1,11 @@
+[package]
+name = "timer"
+version = "0.0.0"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = "A simple, externally driven timer useful for game develpment"
+
+[dependencies]
+
+[dev-dependencies]

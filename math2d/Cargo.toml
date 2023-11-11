@@ -1,0 +1,13 @@
+[package]
+name = "math2d"
+version = "0.0.0"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = "A simple math library for 2d geometry"
+
+[dependencies]
+libm = "0.2.8"
+
+[dev-dependencies]
+rstest = { version = "0.18.2", default-features = false }

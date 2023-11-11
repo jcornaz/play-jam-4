@@ -1,0 +1,48 @@
+[workspace]
+members = ["crankit/input", "crankit/graphics", "crankit/time", "timer", "math2d"]
+
+[package]
+name = "play-jam-4"
+version = "0.0.0"
+license = "Unlicense"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+rust-version = "1.72"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = ""
+categories = []
+keywords = []
+
+[package.metadata.playdate]
+bundle-id = "com.github.jcornaz.play-jam-4"
+
+[package.metadata.playdate.assets]
+"img/player.png" = "assets/player.png"
+"img/turret/base.png" = "assets/turret/base.png"
+"img/turret/cannon-1.png" = "assets/turret/cannon-1.png"
+"img/turret/cannon-2.png" = "assets/turret/cannon-2.png"
+"img/enemies/spider.png" = "assets/enemies/spider.png"
+"img/bullet.png" = "assets/bullet.png"
+"img/explosion-table-5.png" = "assets/explosion-table-5.png"
+
+[lib]
+crate-type = [
+    "dylib",     # for simulator
+    "staticlib", # for hardware
+]
+
+[dependencies]
+crankit-input = { path = "crankit/input" }
+crankit-graphics = { path = "crankit/graphics" }
+crankit-time = { path = "crankit/time" }
+timer = { path = "timer" }
+math2d = { path = "math2d" }
+playdate-sys = { version = "0.2.10", default-features = false, features = ["lang-items", "entry-point"] }
+
+[dev-dependencies]
+
+
+[profile.release]
+lto = true
+panic = 'abort'
+codegen-units = 1

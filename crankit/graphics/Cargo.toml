@@ -1,0 +1,11 @@
+[package]
+name = "crankit-graphics"
+version = "0.0.0"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = "Ergonomic graphics API for the playdate"
+
+[dependencies]
+playdate-sys = { version = "0.2.10", default-features = false }
+glam = { version = "0.24.2", default-features = false, features = ["libm"] }

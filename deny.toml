@@ -1,0 +1,19 @@
+[advisories]
+vulnerability = "deny"
+unmaintained = "deny"
+yanked = "deny"
+notice = "deny"
+ignore = []
+
+[licenses]
+default = "deny"
+unlicensed = "deny"
+copyleft = "deny"
+allow = ["Unlicense"]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+
+[bans]
+multiple-versions = "allow"
