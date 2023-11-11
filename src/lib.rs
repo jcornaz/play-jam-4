@@ -17,7 +17,7 @@ use playdate_sys::{
 };
 use player::Player;
 
-type Vec2 = math2d::Vector;
+type Vec2 = math2d::Vector<f32>;
 
 struct Game {
     level_image: Image,
