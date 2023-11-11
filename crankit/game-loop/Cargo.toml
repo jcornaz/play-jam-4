@@ -1,0 +1,10 @@
+[package]
+name = "crankit-game-loop"
+version = "0.0.0"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = "Ergonomic game-loop macro for the playdate"
+
+[dependencies]
+playdate-sys = { version = "0.2.10", default-features = false, features =  ["lang-items", "entry-point"] }

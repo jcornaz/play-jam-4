@@ -18,7 +18,7 @@ watch:
 # Run the tests
 test:
 	cargo hack check --feature-powerset --workspace
-	cargo hack test --each-feature --workspace --exclude {{project_name}}
+	cargo hack test --each-feature --workspace --exclude {{project_name}} --exclude crankit-game-loop
 
 # Run the static code analysis
 lint:

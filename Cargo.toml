@@ -1,5 +1,5 @@
 [workspace]
-members = ["crankit/input", "crankit/graphics", "crankit/time", "timer", "math2d", "grid"]
+members = ["crankit/input", "crankit/graphics", "crankit/time", "crankit/game-loop", "timer", "math2d", "grid"]
 
 [package]
 name = "play-jam-4"
@@ -30,6 +30,7 @@ crate-type = [
 crankit-input = { path = "crankit/input" }
 crankit-graphics = { path = "crankit/graphics" }
 crankit-time = { path = "crankit/time" }
+crankit-game-loop = { path = "crankit/game-loop" }
 timer = { path = "timer" }
 grid = { path = "grid", default-features = false }
 math2d = { path = "math2d", default-features = false, features = ["libm", "point", "serde"] }
