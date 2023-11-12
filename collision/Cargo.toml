@@ -1,0 +1,17 @@
+[package]
+name = "collision"
+version = "0.0.0"
+authors = ["Jonathan Cornaz"]
+edition = "2021"
+repository = "https://github.com/jcornaz/play-jam-4"
+description = "A simple collision library for aabb shapes"
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+libm = { version = "0.2.8", default-features = false, optional = true }
+
+[dev-dependencies]
+rstest = { version = "0.18.2", default-features = false }

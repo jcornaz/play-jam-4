@@ -1,5 +1,14 @@
 [workspace]
-members = ["crankit/input", "crankit/graphics", "crankit/time", "crankit/game-loop", "timer", "math2d", "grid"]
+members = [
+    "crankit/input",
+    "crankit/graphics",
+    "crankit/time",
+    "crankit/game-loop",
+    "timer",
+    "math2d",
+    "grid",
+    "collision",
+]
 
 [package]
 name = "play-jam-4"
