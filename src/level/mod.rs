@@ -95,7 +95,9 @@ impl Level {
     }
 
     fn collides_against_hazard(&self) -> bool {
-        if self.player.position().y > self.water.position() {
+        let water_vertical_pos = self.water.vertical_position();
+        let player_vertical_pos = self.player.position().y;
+        if player_vertical_pos > water_vertical_pos {
             return true;
         }
         let player_collision_box = self.player.collision_box();

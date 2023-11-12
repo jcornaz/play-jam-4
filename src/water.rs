@@ -44,8 +44,8 @@ impl Water {
         self.level += RAISE_SPEED * delta_time.as_secs_f32();
     }
 
-    pub fn position(&self) -> f32 {
-        (SCREEN_HEIGHT as f32 / TILE_SIZE) + self.level
+    pub fn vertical_position(&self) -> f32 {
+        (SCREEN_HEIGHT as f32 / TILE_SIZE) - self.level
     }
 
     pub fn draw(&self, images: &Images) {

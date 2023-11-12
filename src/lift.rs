@@ -28,7 +28,7 @@ const INTERACTION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -2.);
 /// Bottom-right of the interaction box relative to the lift position
 const INTERACTION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -1.);
 
-const SPEED_FACTOR: f32 = 0.1;
+const SPEED_FACTOR: f32 = 0.01;
 
 impl Lift {
     pub fn new(base: Vector, height: f32) -> Self {
