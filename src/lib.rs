@@ -16,33 +16,40 @@ use level::{Cell, Level};
 use player::Player;
 
 use crate::lift::Lift;
+use crate::water::Water;
 
 mod animation;
 mod level;
 mod lift;
 mod player;
+mod water;
 
 type Vector = math2d::Vector<f32>;
 type IVector = math2d::Vector<i32>;
 
 const TILE_SIZE: f32 = 16.0;
+const SCREEN_WIDTH: i32 = 400;
+const SCREEN_HEIGHT: i32 = 240;
 
 const PENETRATION_RESOLUTION_MAX_ITER: u32 = 10;
 
 struct Game {
     level_image: Image,
-    lift_image: Image,
-    player_images: player::Images,
-    player: Player,
     grid: Grid<Cell>,
+    player: Player,
+    player_images: player::Images,
+    water: Water,
+    water_images: water::Images,
     lifts: Vec<Lift>,
     active_lift: Option<usize>,
+    lift_image: Image,
 }
 
 impl crankit_game_loop::Game for Game {
     fn new() -> Self {
         let level = Level::load(0).unwrap();
         let player_images = player::Images::load().unwrap();
+        let water_images = water::Images::load().unwrap();
         let player = Player::new(level.player_start);
         let lifts = level
             .lifts
@@ -58,6 +65,8 @@ impl crankit_game_loop::Game for Game {
             lifts,
             lift_image,
             active_lift: None,
+            water_images,
+            water: Water::new(),
         }
     }
 
@@ -88,6 +97,7 @@ impl Game {
         }) {
             self.active_lift = Some(index);
         }
+        self.water.update(delta_time);
     }
 
     fn draw(&mut self) {
@@ -95,6 +105,7 @@ impl Game {
         self.player.draw(&self.player_images);
         self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
         self.level_image.draw([0, 0]);
+        self.water.draw(&self.water_images);
     }
 
     fn resolve_collisions(&mut self) {
