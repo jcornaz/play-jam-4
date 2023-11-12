@@ -26,8 +26,9 @@ keywords = []
 bundle-id = "com.github.jcornaz.play-jam-4"
 
 [package.metadata.playdate.assets]
-"img/levels/level_0.png" = "assets/levels/simplified/level_0/_composite.png"
+"img/levels/level_0.png" = "assets/levels/simplified/level_0/environment.png"
 "img/player-sheet.png" = "assets/player-sheet.png"
+"img/lift.png" = "assets/lift.png"
 
 [lib]
 crate-type = [

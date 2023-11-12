@@ -1,5 +1,8 @@
 use alloc::format;
+use alloc::vec::Vec;
+
 use anyhow::anyhow;
+
 use crankit_graphics::image::Image;
 use grid::Grid;
 
@@ -9,6 +12,7 @@ pub struct Level {
     pub walls_image: Image,
     pub player_start: Vector,
     pub grid: Grid<Cell>,
+    pub lifts: Vec<(Vector, f32)>,
 }
 
 impl Level {
@@ -18,10 +22,12 @@ impl Level {
         let data = ldtk::Data::load(num)?;
         let player_start = data.entities.player[0] / TILE_SIZE;
         let grid = ldtk::load_grid(num, data.width / 16, data.height / 16)?;
+        let lifts = data.entities.lifts.into_iter().map(Into::into).collect();
         Ok(Self {
             walls_image,
             player_start,
             grid,
+            lifts,
         })
     }
 }
@@ -34,10 +40,15 @@ pub enum Cell {
 }
 
 mod ldtk {
+    use alloc::vec::Vec;
+
     use anyhow::anyhow;
+    use serde::Deserialize;
+
     use grid::Grid;
     use math2d::Vector;
-    use serde::Deserialize;
+
+    use crate::TILE_SIZE;
 
     use super::Cell;
 
@@ -70,6 +81,35 @@ mod ldtk {
     #[derive(Debug, Clone, Deserialize)]
     pub struct Entities {
         pub player: [Vector; 1],
+        #[serde(rename = "lift")]
+        pub lifts: Vec<Lift>,
+    }
+
+    #[derive(Debug, Clone, Deserialize)]
+    #[serde(rename_all = "camelCase")]
+    pub struct Lift {
+        #[serde(flatten)]
+        pub position: Vector,
+        pub custom_fields: LiftCustomFields,
+    }
+
+    impl From<Lift> for (Vector, f32) {
+        fn from(value: Lift) -> Self {
+            let base = value.position / TILE_SIZE;
+            let height = base.y - (value.custom_fields.arrival.cy / TILE_SIZE);
+            (base, height)
+        }
+    }
+
+    #[derive(Debug, Clone, Deserialize)]
+    #[serde(rename_all = "PascalCase")]
+    pub struct LiftCustomFields {
+        pub arrival: ArrivalPoint,
+    }
+
+    #[derive(Debug, Clone, Deserialize)]
+    pub struct ArrivalPoint {
+        pub cy: f32,
     }
 
     pub fn load_grid(level_num: usize, width: usize, height: usize) -> anyhow::Result<Grid<Cell>> {
