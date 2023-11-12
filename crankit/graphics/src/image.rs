@@ -5,7 +5,7 @@ use core::{
     ptr,
 };
 
-use playdate_sys::ffi::{LCDBitmap, LCDBitmapFlip};
+use playdate_sys::ffi::{LCDBitmap, LCDBitmapDrawMode, LCDBitmapFlip};
 
 use crate::{color::with_lcd_color, Color};
 use crate::{gfx, with_draw_context, LoadError};
@@ -237,6 +237,61 @@ impl From<Flip> for LCDBitmapFlip {
             Flip::FlippedX => Self::kBitmapFlippedX,
             Flip::FlippedY => Self::kBitmapFlippedY,
             Flip::FlippedXY => Self::kBitmapFlippedXY,
+        }
+    }
+}
+
+/// Temporarly sets the mode used for drawing bitmaps and execute [action] before setting the drawing mode back to its default.
+///
+/// Note that text drawing uses bitmaps, so this affects how fonts are displayed as well.
+pub fn with_draw_mode(mode: DrawMode, action: impl FnOnce()) {
+    set_draw_mode(mode);
+    action();
+    set_draw_mode(DrawMode::default());
+}
+
+/// Sets the mode used for drawing bitmaps.
+///
+/// Note that text drawing uses bitmaps, so this affects how fonts are displayed as well.
+pub fn set_draw_mode(mode: DrawMode) {
+    unsafe { gfx().setDrawMode.unwrap()(mode.into()) }
+}
+
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Default, Eq, PartialEq)]
+pub enum DrawMode {
+    /// Images are drawn exactly as they are (black pixels are drawn black and white pixels are drawn white)
+    #[default]
+    Copy,
+    /// Any white portions of an image are drawn transparent (black pixels are drawn black and white pixels are drawn transparent)
+    WhiteTransparent,
+    /// Any black portions of an image are drawn transparent (black pixels are drawn transparent and white pixels are drawn white)
+    BlackTransparent,
+    /// All non-transparent pixels are drawn white (black pixels are drawn white and white pixels are drawn white)
+    FillWhite,
+    /// All non-transparent pixels are drawn black (black pixels are drawn black and white pixels are drawn black)
+    FillBlack,
+    /// Pixels are drawn inverted on white backgrounds, creating an effect where any white pixels in the original image will always be visible,
+    /// regardless of the background color, and any black pixels will appear transparent (on a white background, black pixels are drawn white and white pixels are drawn black)
+    XOR,
+    /// Pixels are drawn inverted on black backgrounds, creating an effect where any black pixels in the original image will always be visible,
+    /// regardless of the background color, and any white pixels will appear transparent (on a black background, black pixels are drawn white and white pixels are drawn black)
+    NXOR,
+    /// Pixels are drawn inverted (black pixels are drawn white and white pixels are drawn black)
+    Inverted,
+}
+
+impl From<DrawMode> for LCDBitmapDrawMode {
+    fn from(value: DrawMode) -> Self {
+        match value {
+            DrawMode::Copy => LCDBitmapDrawMode::kDrawModeCopy,
+            DrawMode::WhiteTransparent => LCDBitmapDrawMode::kDrawModeWhiteTransparent,
+            DrawMode::BlackTransparent => LCDBitmapDrawMode::kDrawModeBlackTransparent,
+            DrawMode::FillWhite => LCDBitmapDrawMode::kDrawModeFillWhite,
+            DrawMode::FillBlack => LCDBitmapDrawMode::kDrawModeFillBlack,
+            DrawMode::XOR => LCDBitmapDrawMode::kDrawModeXOR,
+            DrawMode::NXOR => LCDBitmapDrawMode::kDrawModeNXOR,
+            DrawMode::Inverted => LCDBitmapDrawMode::kDrawModeInverted,
         }
     }
 }

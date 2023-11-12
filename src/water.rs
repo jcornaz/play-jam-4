@@ -2,7 +2,7 @@ use core::time::Duration;
 
 use anyhow::anyhow;
 
-use crankit_graphics::image::Image;
+use crankit_graphics::image::{self, Image};
 
 use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE};
 
@@ -45,13 +45,15 @@ impl Water {
     }
 
     pub fn draw(&self, images: &Images) {
-        let mut y = SCREEN_HEIGHT - (self.level * TILE_SIZE) as i32 - IMAGE_OFFSET;
-        images
-            .surface
-            .draw_tiled([0, y], [SCREEN_WIDTH, images.height]);
-        y += images.height;
-        images
-            .body
-            .draw_tiled([0, y], [SCREEN_WIDTH, SCREEN_HEIGHT - y]);
+        image::with_draw_mode(image::DrawMode::XOR, || {
+            let mut y = SCREEN_HEIGHT - (self.level * TILE_SIZE) as i32 - IMAGE_OFFSET;
+            images
+                .surface
+                .draw_tiled([0, y], [SCREEN_WIDTH, images.height]);
+            y += images.height;
+            images
+                .body
+                .draw_tiled([0, y], [SCREEN_WIDTH, SCREEN_HEIGHT - y]);
+        });
     }
 }
