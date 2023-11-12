@@ -106,7 +106,7 @@ impl Level {
             .map(|[x, y]| {
                 Aabb::from_min_max(
                     [x as f32 + 0.1, y as f32 + 0.1],
-                    [x as f32 + 0.8, x as f32 + 0.8],
+                    [x as f32 + 0.8, y as f32 + 0.8],
                 )
             });
         player_collision_box.collides_any(hazards)
