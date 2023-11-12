@@ -34,6 +34,7 @@ bundle-id = "com.github.jcornaz.play-jam-4"
 "img/lift.png" = "assets/lift.png"
 "img/water/body.png" = "assets/water.png"
 "img/water/surface.png" = "assets/water-surface.png"
+"img/key.png" = "assets/key.png"
 
 [lib]
 crate-type = [

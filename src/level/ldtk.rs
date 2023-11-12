@@ -41,6 +41,8 @@ pub struct Entities {
     pub player: [Vector; 1],
     #[serde(rename = "lift")]
     pub lifts: Vec<Lift>,
+    #[serde(rename = "key")]
+    pub keys: Vec<Vector>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

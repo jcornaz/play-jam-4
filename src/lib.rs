@@ -32,23 +32,26 @@ const SCREEN_WIDTH: i32 = 400;
 const SCREEN_HEIGHT: i32 = 240;
 
 struct Images {
-    player_images: player::Images,
-    water_images: water::Images,
-    lift_image: Image,
+    player: player::Images,
+    water: water::Images,
+    lift: Image,
+    key: Image,
 }
 
 impl Images {
     fn load() -> anyhow::Result<Self> {
-        let player_images =
+        let player =
             player::Images::load().map_err(|err| anyhow!("cannot load player image: {err}"))?;
-        let water_images =
+        let water =
             water::Images::load().map_err(|err| anyhow!("cannot load water images: {err}"))?;
-        let lift_image =
+        let lift =
             Image::load("img/lift").map_err(|err| anyhow!("cannot load lift image: {err}"))?;
+        let key = Image::load("img/key").map_err(|err| anyhow!("cannot load key image: {err}"))?;
         Ok(Self {
-            player_images,
-            water_images,
-            lift_image,
+            player,
+            water,
+            lift,
+            key,
         })
     }
 }

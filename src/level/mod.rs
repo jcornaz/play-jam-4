@@ -19,6 +19,7 @@ pub struct Level {
     player: Player,
     water: Water,
     lifts: Vec<Lift>,
+    keys: Vec<Vector>,
     active_lift: Option<usize>,
 }
 
@@ -52,13 +53,18 @@ impl Level {
             .background
             .iter()
             .for_each(|i| i.draw([0, 0]));
-        self.player.draw(&images.player_images);
-        self.lifts.iter().for_each(|l| l.draw(&images.lift_image));
+        self.player.draw(&images.player);
+        self.lifts.iter().for_each(|l| l.draw(&images.lift));
+        self.keys
+            .iter()
+            .copied()
+            .map(|p| (p * TILE_SIZE).as_vector_i32())
+            .for_each(|p| images.key.draw_from_center(p));
         self.definition
             .foreground
             .iter()
             .for_each(|i| i.draw([0, 0]));
-        self.water.draw(&images.water_images);
+        self.water.draw(&images.water);
     }
 
     fn resolve_collisions(&mut self) {
@@ -122,10 +128,12 @@ impl From<Definition> for Level {
             .copied()
             .map(|(base, height)| Lift::new(base, height))
             .collect();
+        let keys = definition.keys.clone();
         Self {
             definition,
             player,
             lifts,
+            keys,
             active_lift: None,
             water: Water::new(),
         }
@@ -147,6 +155,7 @@ pub struct Definition {
     pub player_start: Vector,
     pub grid: Grid<Cell>,
     pub lifts: Vec<(Vector, f32)>,
+    pub keys: Vec<Vector>,
 }
 
 impl Definition {
@@ -157,12 +166,19 @@ impl Definition {
         let player_start = data.entities.player[0] / TILE_SIZE;
         let grid = ldtk::load_grid(num, data.width / 16, data.height / 16)?;
         let lifts = data.entities.lifts.into_iter().map(Into::into).collect();
+        let keys = data
+            .entities
+            .keys
+            .into_iter()
+            .map(|v| v / TILE_SIZE)
+            .collect();
         Ok(Self {
             background,
             foreground,
             player_start,
             grid,
             lifts,
+            keys,
         })
     }
 
