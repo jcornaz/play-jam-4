@@ -7,8 +7,7 @@ use crankit_graphics::image::Image;
 use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE};
 
 pub struct Images {
-    width: usize,
-    height: usize,
+    height: i32,
     body: Image,
     surface: Image,
 }
@@ -19,10 +18,9 @@ impl Images {
             .map_err(|err| anyhow!("cannot load water body image: {err}"))?;
         let surface = Image::load("img/water/surface")
             .map_err(|err| anyhow!("cannot load water surface image: {err}"))?;
-        let [w, h] = body.size();
+        let [_, height] = body.size();
         Ok(Self {
-            width: w as usize,
-            height: h as usize,
+            height,
             body,
             surface,
         })
@@ -47,12 +45,13 @@ impl Water {
     }
 
     pub fn draw(&self, images: &Images) {
-        let y = SCREEN_HEIGHT - (self.level * TILE_SIZE) as i32 - IMAGE_OFFSET;
-        for x in (0..SCREEN_WIDTH).step_by(images.width) {
-            images.surface.draw([x, y]);
-            for y in ((y + images.height as i32)..SCREEN_HEIGHT).step_by(images.height) {
-                images.body.draw([x, y]);
-            }
-        }
+        let mut y = SCREEN_HEIGHT - (self.level * TILE_SIZE) as i32 - IMAGE_OFFSET;
+        images
+            .surface
+            .draw_tiled([0, y], [SCREEN_WIDTH, images.height]);
+        y += images.height;
+        images
+            .body
+            .draw_tiled([0, y], [SCREEN_WIDTH, SCREEN_HEIGHT - y]);
     }
 }

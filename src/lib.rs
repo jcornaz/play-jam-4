@@ -11,7 +11,7 @@ use collision::Aabb;
 use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::{button_state, crank_change};
-use crankit_time::{elapsed_time, reset_elapsed_time};
+use crankit_time::reset_elapsed_time;
 use grid::Grid;
 use level::{Cell, Level};
 use player::Player;
@@ -84,7 +84,7 @@ impl crankit_game_loop::Game for Game {
         self.draw();
         #[cfg(feature = "draw-fps")]
         {
-            self.frame_durations.push(elapsed_time());
+            self.frame_durations.push(crankit_time::elapsed_time());
             if self.frame_durations.len() >= FRAME_WINDOW {
                 let max_duration = self.frame_durations.drain(0..).max().unwrap_or_default();
                 println!("(max) frame duration: {max_duration:?}")

@@ -61,6 +61,26 @@ impl Image {
         unsafe { gfx().drawBitmap.unwrap()(self.ptr, x, y, flip) }
     }
 
+    /// Draws the image with its upper-left corner at [position] tiled inside the rectangle of [size]
+    pub fn draw_tiled(&self, position: impl Into<[i32; 2]>, size: impl Into<[i32; 2]>) {
+        self.draw_tiled_with_flip(position, size, Flip::Unflipped);
+    }
+
+    /// Draws the image with its upper-left corner at [position] tiled inside the rectangle of [size]
+    pub fn draw_tiled_with_flip(
+        &self,
+        position: impl Into<[i32; 2]>,
+        size: impl Into<[i32; 2]>,
+        flip: Flip,
+    ) {
+        let [x, y] = position.into();
+        let [w, h] = size.into();
+        let flip = flip.into();
+        unsafe {
+            gfx().tileBitmap.unwrap()(self.ptr, x, y, w, h, flip);
+        }
+    }
+
     /// Draws the image rotated by `degrees` around its `center` at `point`
     pub fn draw_rotated_around_center(&self, point: impl Into<[i32; 2]>, degrees: f32) {
         self.draw_rotated(point, degrees, [0.5, 0.5]);
