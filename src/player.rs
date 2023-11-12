@@ -1,24 +1,18 @@
 use core::time::Duration;
 
 use anyhow::anyhow;
-use playdate_sys::println;
 
 use collision::Aabb;
 use crankit_graphics::image::{Flip, Image};
 use crankit_input::{Button, ButtonState};
-use grid::Grid;
 
-use crate::{
-    animation::Animation, collides_against_terrain, level::Cell, IVector, Vector, TILE_SIZE,
-};
+use crate::{animation::Animation, IVector, Vector, TILE_SIZE};
 
 const RUN_SPEED: f32 = 5.;
 const ANIMATION_FPS: f32 = 10.0;
 const RUN_ANIMATION_LEN: usize = 4;
 const JUMP_VELOCITY: f32 = 10.;
 const GRAVITY: f32 = 25.;
-
-const PENETRATION_RESOLUTION_MAX_ITER: u32 = 10;
 
 /// Top-left of the collision bounding box relative to the player position
 const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-6. / TILE_SIZE, -12. / TILE_SIZE);
@@ -85,36 +79,31 @@ impl Player {
         self.velocity.x = horizontal_speed_input(buttons);
     }
 
-    pub fn update(&mut self, delta_time: Duration, grid: &Grid<Cell>) {
+    pub fn update(&mut self, delta_time: Duration) {
         self.update_animation(delta_time);
         let delta_seconds = delta_time.as_secs_f32();
         self.velocity.y += GRAVITY * delta_seconds;
         self.position += self.velocity * delta_seconds;
-        self.resolve_collisions(grid);
     }
 
-    fn resolve_collisions(&mut self, grid: &Grid<Cell>) {
-        let mut iter = 0;
-        while let Some(penetration) = collides_against_terrain(grid, self.collision_box()) {
-            iter += 1;
-            if iter > PENETRATION_RESOLUTION_MAX_ITER {
-                println!(
-                    "Exhausted number of iteration for collision detection resolution ({})",
-                    PENETRATION_RESOLUTION_MAX_ITER
-                );
-                return;
-            }
-            self.position += penetration;
-            if penetration.y < 0. {
-                self.velocity.y = 0.;
-                self.is_on_ground = true;
-            } else if penetration.y > 0. && self.velocity.y < 0. {
-                self.velocity.y = 0.
-            }
+    pub fn move_by(&mut self, delta: Vector) {
+        self.position += delta;
+    }
+
+    pub fn on_floor_hit(&mut self) {
+        if self.velocity.y >= 0.0 {
+            self.velocity.y = 0.0;
+            self.is_on_ground = true;
         }
     }
 
-    fn collision_box(&self) -> Aabb {
+    pub fn on_roof_hit(&mut self) {
+        if self.velocity.y < 0.0 {
+            self.velocity.y = 0.0;
+        }
+    }
+
+    pub fn collision_box(&self) -> Aabb {
         Aabb::from_min_max(
             self.position + COLLISION_BOX_TOP_LEFT,
             self.position + COLLISION_BOX_BOTTOM_RIGHT,

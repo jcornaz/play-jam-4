@@ -14,10 +14,10 @@ pub struct Lift {
 const IMAGE_TOP_LEFT: IVector = IVector::new(-24, -240);
 
 /// Top-left of the collision box relative to the lift position
-const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-0.5, -16. / 240.);
+const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -1.);
 
 /// Bottom-right of the collision box relative to the lift position
-const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(0.5, 0.);
+const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -0.5);
 
 impl Lift {
     pub fn new(base: Vector, height: f32) -> Self {
@@ -32,7 +32,7 @@ impl Lift {
         self.current = (self.current + amount).min(self.height);
     }
 
-    pub fn _collision_box(&self) -> Aabb {
+    pub fn collision_box(&self) -> Aabb {
         let pos = self.position();
         Aabb::from_min_max(
             pos + COLLISION_BOX_TOP_LEFT,
