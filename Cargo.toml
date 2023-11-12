@@ -48,7 +48,6 @@ playdate-sys = { version = "0.2.10", default-features = false, features = ["lang
 serde = { version = "1.0.192", default-features = false, features = ["derive"] }
 serde_json = { version = "1.0.108", default-features = false, features = ["alloc"] }
 anyhow = { version = "1.0.75", default-features = false }
-smallvec = { version = "1.11.2", default-features = false, features = ["serde"] }
 libm = "0.2.8"
 
 [dev-dependencies]

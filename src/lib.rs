@@ -13,6 +13,7 @@ use player::Player;
 
 mod animation;
 mod level;
+mod lift;
 mod player;
 
 type Vector = math2d::Vector<f32>;
