@@ -6,19 +6,20 @@ use collision::Aabb;
 
 #[rstest]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([2., 0.], [3., 1.]))]
+#[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([1., 0.], [2., 1.]))]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([-2., 0.], [-1., 1.]))]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([0., -2.], [0., -1.]))]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([0., 2.], [0., 3.]))]
-fn returns_none_if_does_not_collide(#[case] shape1: Aabb, #[case] shape2: Aabb) {
+fn should_not_collide(#[case] shape1: Aabb, #[case] shape2: Aabb) {
+    assert!(!shape1.collides(shape2));
     assert_eq!(shape1.penetration(shape2), None);
 }
 
 #[test]
-fn should_penetrate_self() {
+fn should_collide_with_self() {
     let shape = Aabb::from_min_max([0., 0.], [1., 1.]);
-    let [x, y] = shape
-        .penetration(shape)
-        .expect("shape does not penetrate itself");
+    assert!(shape.collides(shape));
+    let [x, y] = shape.penetration(shape).unwrap();
     assert_eq!(x.abs() + y.abs(), 1.);
 }
 
@@ -27,13 +28,14 @@ fn should_penetrate_self() {
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([-0.5, 0.], [0.5, 1.]), [0.5, 0.0])]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([0., -0.5], [1.0, 0.5]), [0.0, 0.5])]
 #[case(Aabb::from_min_max([0., 0.], [1., 1.]), Aabb::from_min_max([0., 0.5], [1.0, 1.5]), [0.0, -0.5])]
-fn returns_expected_penetration_when_shapes_collide(
+fn should_collide(
     #[case] shape1: Aabb,
     #[case] shape2: Aabb,
     #[case] expected_penetration: [f32; 2],
 ) {
     println!("shape1: {shape1:?}");
     println!("shape2: {shape2:?}");
+    assert!(shape1.collides(shape2));
     let actual_penetration = shape1
         .penetration(shape2)
         .expect("the shape are not penetrating");

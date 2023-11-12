@@ -15,6 +15,11 @@ impl Aabb {
         Self { x, y }
     }
 
+    /// Returns true if [self] overlaps [other]
+    pub fn collides(self, other: Self) -> bool {
+        self.x.collides(other.x) && self.y.collides(other.y)
+    }
+
     /// Returns by how much [`self`] should be moved in order to resolve penetration with [other]
     ///
     /// Returns `None` if the two shape are not collided
@@ -58,6 +63,10 @@ impl Range {
             min: min.min(max),
             max: min.max(max),
         }
+    }
+
+    pub fn collides(self, other: Self) -> bool {
+        self.max > other.min && self.min < other.max
     }
 
     #[cfg(any(feature = "std", feature = "libm"))]

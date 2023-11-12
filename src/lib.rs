@@ -36,6 +36,7 @@ struct Game {
     player: Player,
     grid: Grid<Cell>,
     lifts: Vec<Lift>,
+    active_lift: Option<Lift>,
 }
 
 impl crankit_game_loop::Game for Game {
@@ -56,6 +57,7 @@ impl crankit_game_loop::Game for Game {
             grid: level.grid,
             lifts,
             lift_image,
+            active_lift: None,
         }
     }
 
