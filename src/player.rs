@@ -1,6 +1,7 @@
 use core::time::Duration;
 
 use anyhow::anyhow;
+use playdate_sys::println;
 
 use collision::Aabb;
 use crankit_graphics::image::{Flip, Image};
@@ -16,6 +17,8 @@ const ANIMATION_FPS: f32 = 10.0;
 const RUN_ANIMATION_LEN: usize = 4;
 const JUMP_VELOCITY: f32 = 10.;
 const GRAVITY: f32 = 25.;
+
+const PENETRATION_RESOLUTION_MAX_ITER: u32 = 10;
 
 /// Top-left of the collision bounding box relative to the player position
 const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-6. / TILE_SIZE, -12. / TILE_SIZE);
@@ -87,11 +90,20 @@ impl Player {
         let delta_seconds = delta_time.as_secs_f32();
         self.velocity.y += GRAVITY * delta_seconds;
         self.position += self.velocity * delta_seconds;
-        let collision_box = Aabb::from_min_max(
-            self.position + COLLISION_BOX_TOP_LEFT,
-            self.position + COLLISION_BOX_BOTTOM_RIGHT,
-        );
-        if let Some(penetration) = collides_against_terrain(grid, collision_box) {
+        self.resolve_collisions(grid);
+    }
+
+    fn resolve_collisions(&mut self, grid: &Grid<Cell>) {
+        let mut iter = 0;
+        while let Some(penetration) = collides_against_terrain(grid, self.collision_box()) {
+            iter += 1;
+            if iter > PENETRATION_RESOLUTION_MAX_ITER {
+                println!(
+                    "Exhausted number of iteration for collision detection resolution ({})",
+                    PENETRATION_RESOLUTION_MAX_ITER
+                );
+                return;
+            }
             self.position += penetration;
             if penetration.y < 0. {
                 self.velocity.y = 0.;
@@ -100,6 +112,13 @@ impl Player {
                 self.velocity.y = 0.
             }
         }
+    }
+
+    fn collision_box(&self) -> Aabb {
+        Aabb::from_min_max(
+            self.position + COLLISION_BOX_TOP_LEFT,
+            self.position + COLLISION_BOX_BOTTOM_RIGHT,
+        )
     }
 
     fn update_animation(&mut self, delta_time: Duration) {
