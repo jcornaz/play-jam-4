@@ -42,6 +42,9 @@ impl Level {
             self.active_lift = Some(index);
         }
         self.water.update(delta_time);
+        if self.collides_against_hazard() {
+            *self = self.definition.clone().into();
+        }
     }
 
     pub fn draw(&self, images: &Images) {
@@ -135,6 +138,7 @@ fn coords(bounding_box: Aabb) -> impl Iterator<Item = [usize; 2]> {
     })
 }
 
+#[derive(Clone)]
 pub struct Definition {
     pub background: [Image; 2],
     pub foreground: [Image; 2],

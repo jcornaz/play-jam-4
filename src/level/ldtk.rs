@@ -78,6 +78,10 @@ pub fn load_grid(level_num: usize, width: usize, height: usize) -> anyhow::Resul
         .split(',')
         .map(|s| s.trim())
         .filter(|s| !s.is_empty())
-        .map(|v| if v == "0" { Cell::Empty } else { Cell::Terrain });
+        .map(|v| match v {
+            "1" => Cell::Terrain,
+            "2" => Cell::Hazard,
+            _ => Cell::Empty,
+        });
     Ok(Grid::from_iter(width, height, cells))
 }

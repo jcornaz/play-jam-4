@@ -2,10 +2,12 @@
 
 extern crate alloc;
 
+#[cfg(feature = "draw-fps")]
 use alloc::vec::Vec;
 use core::time::Duration;
 
 use anyhow::anyhow;
+#[cfg(feature = "draw-fps")]
 use playdate_sys::println;
 
 use crankit_game_loop::game_loop;
