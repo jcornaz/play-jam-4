@@ -2,8 +2,8 @@
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Aabb {
-    x: Range,
-    y: Range,
+    pub x: Range,
+    pub y: Range,
 }
 
 impl Aabb {
@@ -24,16 +24,36 @@ impl Aabb {
         let y = self.y.penetration(other.y)?;
         Some(if abs(x) < abs(y) { [x, 0.] } else { [0., y] })
     }
+
+    /// Returns the minimum non-zero penetration of [self] against the [others] shapes.
+    ///
+    /// Returns `None` if self does not penetrate any other shape.
+    #[cfg(any(feature = "std", feature = "libm"))]
+    pub fn min_penetration(self, others: impl IntoIterator<Item = Aabb>) -> Option<[f32; 2]> {
+        let mut min_magnitude = f32::MAX;
+        let mut min = None;
+        others
+            .into_iter()
+            .filter_map(move |other| self.penetration(other))
+            .for_each(|p| {
+                let magnitude = abs(p[0]) + abs(p[1]);
+                if magnitude < min_magnitude {
+                    min_magnitude = magnitude;
+                    min = Some(p);
+                }
+            });
+        min
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-struct Range {
+pub struct Range {
     min: f32,
     max: f32,
 }
 
 impl Range {
-    fn from_min_max(min: f32, max: f32) -> Self {
+    pub fn from_min_max(min: f32, max: f32) -> Self {
         Self {
             min: min.min(max),
             max: min.max(max),
@@ -48,6 +68,12 @@ impl Range {
     }
 }
 
+impl From<Range> for [f32; 2] {
+    fn from(Range { min, max }: Range) -> Self {
+        [min, max]
+    }
+}
+
 #[cfg(feature = "std")]
 fn abs(v: f32) -> f32 {
     v.abs()
@@ -55,7 +81,7 @@ fn abs(v: f32) -> f32 {
 
 #[cfg(all(not(feature = "std"), feature = "libm"))]
 fn abs(v: f32) -> f32 {
-    libm::absf(v)
+    libm::fabsf(v)
 }
 
 #[cfg(all(test, any(feature = "std", feature = "libm")))]

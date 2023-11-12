@@ -2,6 +2,7 @@
 
 extern crate alloc;
 
+use collision::Aabb;
 use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::button_state;
@@ -48,6 +49,21 @@ impl crankit_game_loop::Game for Game {
         self.player.update(delta_time, &self.grid);
         self.player.draw(&self.player_images);
     }
+}
+
+fn coords(bounding_box: Aabb) -> impl Iterator<Item = [usize; 2]> {
+    let [min_x, max_x] = bounding_box.x.into();
+    let [min_y, max_y] = bounding_box.y.into();
+    ((libm::floorf(min_x) as usize)..=(libm::ceilf(max_x) as usize)).flat_map(move |x| {
+        ((libm::floorf(min_y) as usize)..=(libm::ceilf(max_y) as usize)).map(move |y| [x, y])
+    })
+}
+
+fn collides_against_terrain(grid: &Grid<Cell>, bounding_box: Aabb) -> Option<Vector> {
+    let terrain = coords(bounding_box)
+        .filter(|c| matches!(grid.get(*c), Some(Cell::Terrain)))
+        .map(|[x, y]| Aabb::from_min_max([x as f32, y as f32], [(x + 1) as f32, (y + 1) as f32]));
+    bounding_box.min_penetration(terrain).map(Into::into)
 }
 
 game_loop!(Game);

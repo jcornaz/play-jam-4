@@ -121,6 +121,7 @@ name = "play-jam-4"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "collision",
  "crankit-game-loop",
  "crankit-graphics",
  "crankit-input",

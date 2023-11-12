@@ -2,15 +2,24 @@ use core::time::Duration;
 
 use anyhow::anyhow;
 
+use collision::Aabb;
 use crankit_graphics::image::{Flip, Image};
 use crankit_input::{Button, ButtonState};
 use grid::Grid;
 
-use crate::{animation::Animation, level::Cell, IVector, Vector, TILE_SIZE};
+use crate::{
+    animation::Animation, collides_against_terrain, level::Cell, IVector, Vector, TILE_SIZE,
+};
 
 const RUN_SPEED: f32 = 5.;
 const ANIMATION_FPS: f32 = 10.0;
 const RUN_ANIMATION_LEN: usize = 4;
+
+/// Top-left of the collision bounding box relative to the player position
+const BOUNDING_BOX_MIN: Vector = Vector::new(-6. / TILE_SIZE, -12. / TILE_SIZE);
+
+/// Bottom-right of the collision bounding box relative to the player position
+const BOUNDING_BOX_MAX: Vector = Vector::new(6. / TILE_SIZE, 0.);
 
 pub struct Images {
     /// Vector from the origin of the player to the top-left of the images
@@ -72,7 +81,7 @@ impl Player {
         }
     }
 
-    pub fn update(&mut self, delta_time: Duration, _grid: &Grid<Cell>) {
+    pub fn update(&mut self, delta_time: Duration, grid: &Grid<Cell>) {
         match &mut self.state {
             State::Idle => (),
             State::Running {
@@ -82,6 +91,13 @@ impl Player {
                 animation.update(delta_time);
                 self.position.x += *velocity * delta_time.as_secs_f32();
             }
+        }
+        let collision_shape = Aabb::from_min_max(
+            self.position + BOUNDING_BOX_MIN,
+            self.position + BOUNDING_BOX_MAX,
+        );
+        if let Some(penetration) = collides_against_terrain(grid, collision_shape) {
+            self.position += penetration;
         }
     }
 
