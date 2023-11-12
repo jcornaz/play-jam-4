@@ -30,6 +30,11 @@ impl Aabb {
         Some(if abs(x) < abs(y) { [x, 0.] } else { [0., y] })
     }
 
+    /// Returns true if [self] collides with any [others]
+    pub fn collides_any(self, others: impl IntoIterator<Item = Self>) -> bool {
+        others.into_iter().any(|b| self.collides(b))
+    }
+
     /// Returns the maximum penetration of [self] against the [others] shapes.
     ///
     /// Returns `None` if [self] does not penetrate any of the [others] shapes.

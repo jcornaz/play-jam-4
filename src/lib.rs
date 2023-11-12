@@ -5,6 +5,8 @@ extern crate alloc;
 use alloc::vec::Vec;
 use core::time::Duration;
 
+use anyhow::anyhow;
+use libm::{ceilf, floorf};
 use playdate_sys::println;
 
 use collision::Aabb;
@@ -12,7 +14,7 @@ use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::{button_state, crank_change};
 use crankit_time::reset_elapsed_time;
-use level::{Cell, Level};
+use level::{Cell, LevelDef};
 use player::Player;
 
 use crate::lift::Lift;
@@ -33,15 +35,35 @@ const SCREEN_HEIGHT: i32 = 240;
 
 const PENETRATION_RESOLUTION_MAX_ITER: u32 = 10;
 
-struct Game {
-    level: Level,
-    player: Player,
+struct Images {
     player_images: player::Images,
-    water: Water,
     water_images: water::Images,
+    lift_image: Image,
+}
+
+impl Images {
+    fn load() -> anyhow::Result<Self> {
+        let player_images =
+            player::Images::load().map_err(|err| anyhow!("cannot load player image: {err}"))?;
+        let water_images =
+            water::Images::load().map_err(|err| anyhow!("cannot load water images: {err}"))?;
+        let lift_image =
+            Image::load("img/lift").map_err(|err| anyhow!("cannot load lift image: {err}"))?;
+        Ok(Self {
+            player_images,
+            water_images,
+            lift_image,
+        })
+    }
+}
+
+struct Game {
+    images: Images,
+    level: LevelDef,
+    player: Player,
+    water: Water,
     lifts: Vec<Lift>,
     active_lift: Option<usize>,
-    lift_image: Image,
     #[cfg(feature = "draw-fps")]
     frame_durations: Vec<Duration>,
 }
@@ -51,9 +73,8 @@ const FRAME_WINDOW: usize = 30;
 
 impl crankit_game_loop::Game for Game {
     fn new() -> Self {
-        let level = Level::load(0).unwrap();
-        let player_images = player::Images::load().unwrap();
-        let water_images = water::Images::load().unwrap();
+        let level = LevelDef::load(0).unwrap();
+        let images = Images::load().unwrap();
         let player = Player::new(level.player_start);
         let lifts = level
             .lifts
@@ -61,15 +82,12 @@ impl crankit_game_loop::Game for Game {
             .copied()
             .map(|(base, height)| Lift::new(base, height))
             .collect();
-        let lift_image = Image::load("img/lift").unwrap();
         Self {
+            images,
             level,
             player,
-            player_images,
             lifts,
-            lift_image,
             active_lift: None,
-            water_images,
             water: Water::new(),
             #[cfg(feature = "draw-fps")]
             frame_durations: Vec::with_capacity(FRAME_WINDOW),
@@ -117,17 +135,19 @@ impl Game {
     fn draw(&mut self) {
         crankit_graphics::clear(Color::black());
         self.level.background.iter().for_each(|i| i.draw([0, 0]));
-        self.player.draw(&self.player_images);
-        self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
+        self.player.draw(&self.images.player_images);
+        self.lifts
+            .iter()
+            .for_each(|l| l.draw(&self.images.lift_image));
         self.level.foreground.iter().for_each(|i| i.draw([0, 0]));
-        self.water.draw(&self.water_images);
+        self.water.draw(&self.images.water_images);
         #[cfg(feature = "draw-fps")]
         crankit_graphics::draw_fps([0, 0]);
     }
 
     fn resolve_collisions(&mut self) {
         let mut iter = 0;
-        while let Some(penetration) = self.collides_against_terrain(self.player.collision_box()) {
+        while let Some(penetration) = self.collides_against_terrain() {
             iter += 1;
             if iter > PENETRATION_RESOLUTION_MAX_ITER {
                 println!(
@@ -145,24 +165,41 @@ impl Game {
         }
     }
 
-    fn collides_against_terrain(&self, bounding_box: Aabb) -> Option<Vector> {
-        let terrain = coords(bounding_box)
+    fn collides_against_terrain(&self) -> Option<Vector> {
+        let player_collision_box = self.player.collision_box();
+        let terrain = coords(player_collision_box)
             .filter(|c| matches!(self.level.grid.get(*c), Some(Cell::Terrain)))
             .map(|[x, y]| {
                 Aabb::from_min_max([x as f32, y as f32], [(x + 1) as f32, (y + 1) as f32])
             });
         let lifts = self.lifts.iter().map(|l| l.collision_box());
-        bounding_box
+        player_collision_box
             .max_penetration(terrain.chain(lifts))
             .map(Into::into)
+    }
+
+    fn collides_against_hazard(&self) -> bool {
+        if self.player.position().y > self.water.position() {
+            return true;
+        }
+        let player_collision_box = self.player.collision_box();
+        let hazards = coords(player_collision_box)
+            .filter(|c| matches!(self.level.grid.get(*c), Some(Cell::Hazard)))
+            .map(|[x, y]| {
+                Aabb::from_min_max(
+                    [x as f32 + 0.1, y as f32 + 0.1],
+                    [x as f32 + 0.8, x as f32 + 0.8],
+                )
+            });
+        player_collision_box.collides_any(hazards)
     }
 }
 
 fn coords(bounding_box: Aabb) -> impl Iterator<Item = [usize; 2]> {
     let [min_x, max_x] = bounding_box.x.into();
     let [min_y, max_y] = bounding_box.y.into();
-    ((libm::floorf(min_x) as usize)..=(libm::ceilf(max_x) as usize)).flat_map(move |x| {
-        ((libm::floorf(min_y) as usize)..=(libm::ceilf(max_y) as usize)).map(move |y| [x, y])
+    ((floorf(min_x) as usize)..=(ceilf(max_x) as usize)).flat_map(move |x| {
+        ((floorf(min_y) as usize)..=(ceilf(max_y) as usize)).map(move |y| [x, y])
     })
 }
 

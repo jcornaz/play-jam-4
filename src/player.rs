@@ -86,6 +86,10 @@ impl Player {
         self.position += self.velocity * delta_seconds;
     }
 
+    pub fn position(&self) -> Vector {
+        self.position
+    }
+
     pub fn move_by(&mut self, delta: Vector) {
         self.position += delta;
     }
