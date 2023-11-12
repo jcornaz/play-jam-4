@@ -9,11 +9,36 @@
 	"neighbourLevels": [],
 	"customFields" : {},
 	"layers": [
+		"background_deco.png",
 		"background.png",
-		"environment.png",
-		"decorations.png"
+		"foreground.png",
+		"foreground_deco.png"
 	],
 	"entities": {
+		"key": [
+			{
+				"id": "key",
+				"iid": "4fe6aef0-6280-11ee-99ef-8be6bded5bca",
+				"layer": "keys",
+				"x": 168,
+				"y": 168,
+				"width": 16,
+				"height": 16,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "key",
+				"iid": "51602f90-6280-11ee-99ef-07ab656e3efd",
+				"layer": "keys",
+				"x": 248,
+				"y": 104,
+				"width": 16,
+				"height": 16,
+				"color": 7552569,
+				"customFields" : {}
+			}
+		],
 		"player": [
 			{
 				"id": "player",

@@ -12,7 +12,6 @@ use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
 use crankit_input::{button_state, crank_change};
 use crankit_time::reset_elapsed_time;
-use grid::Grid;
 use level::{Cell, Level};
 use player::Player;
 
@@ -35,8 +34,7 @@ const SCREEN_HEIGHT: i32 = 240;
 const PENETRATION_RESOLUTION_MAX_ITER: u32 = 10;
 
 struct Game {
-    level_image: Image,
-    grid: Grid<Cell>,
+    level: Level,
     player: Player,
     player_images: player::Images,
     water: Water,
@@ -59,15 +57,15 @@ impl crankit_game_loop::Game for Game {
         let player = Player::new(level.player_start);
         let lifts = level
             .lifts
-            .into_iter()
+            .iter()
+            .copied()
             .map(|(base, height)| Lift::new(base, height))
             .collect();
         let lift_image = Image::load("img/lift").unwrap();
         Self {
-            level_image: level.walls_image,
+            level,
             player,
             player_images,
-            grid: level.grid,
             lifts,
             lift_image,
             active_lift: None,
@@ -118,9 +116,10 @@ impl Game {
 
     fn draw(&mut self) {
         crankit_graphics::clear(Color::black());
+        self.level.background.iter().for_each(|i| i.draw([0, 0]));
         self.player.draw(&self.player_images);
-        self.level_image.draw([0, 0]);
         self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
+        self.level.foreground.iter().for_each(|i| i.draw([0, 0]));
         self.water.draw(&self.water_images);
         #[cfg(feature = "draw-fps")]
         crankit_graphics::draw_fps([0, 0]);
@@ -148,7 +147,7 @@ impl Game {
 
     fn collides_against_terrain(&self, bounding_box: Aabb) -> Option<Vector> {
         let terrain = coords(bounding_box)
-            .filter(|c| matches!(self.grid.get(*c), Some(Cell::Terrain)))
+            .filter(|c| matches!(self.level.grid.get(*c), Some(Cell::Terrain)))
             .map(|[x, y]| {
                 Aabb::from_min_max([x as f32, y as f32], [(x + 1) as f32, (y + 1) as f32])
             });
