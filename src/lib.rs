@@ -2,18 +2,17 @@
 
 extern crate alloc;
 
-mod animation;
-mod level;
-mod player;
-
 use crankit_game_loop::game_loop;
-
 use crankit_graphics::{image::Image, Color};
 use crankit_input::button_state;
 use crankit_time::reset_elapsed_time;
 use grid::Grid;
 use level::{Cell, Level};
 use player::Player;
+
+mod animation;
+mod level;
+mod player;
 
 type Vector = math2d::Vector<f32>;
 type IVector = math2d::Vector<i32>;
@@ -45,7 +44,8 @@ impl crankit_game_loop::Game for Game {
         let buttons = button_state();
         crankit_graphics::clear(Color::black());
         self.level_image.draw([0, 0]);
-        self.player.update(delta_time, buttons, &self.grid);
+        self.player.handle_input(buttons);
+        self.player.update(delta_time, &self.grid);
         self.player.draw(&self.player_images);
     }
 }

@@ -2,7 +2,7 @@ use core::time::Duration;
 
 use anyhow::anyhow;
 
-use crankit_graphics::image::Image;
+use crankit_graphics::image::{Flip, Image};
 use crankit_input::{Button, ButtonState};
 use grid::Grid;
 
@@ -46,6 +46,7 @@ impl Images {
 pub struct Player {
     position: Vector,
     state: State,
+    flip: bool,
 }
 
 impl Player {
@@ -53,31 +54,49 @@ impl Player {
         Self {
             position,
             state: State::Idle,
+            flip: false,
         }
     }
 
-    pub fn update(&mut self, delta_time: Duration, buttons: ButtonState, _grid: &Grid<Cell>) {
+    pub fn handle_input(&mut self, buttons: ButtonState) {
         let horizontal_input = horizontal_input(buttons);
         if horizontal_input != 0 {
+            let new_velocity = horizontal_input as f32 * RUN_SPEED;
             match &mut self.state {
-                State::Idle => self.state = State::running(),
-                State::Running { animation } => animation.update(delta_time),
-            };
-            let delta =
-                Vector::X * (horizontal_input as f32 * RUN_SPEED * delta_time.as_secs_f32());
-            self.position += delta;
+                State::Idle => self.state = State::start_running(new_velocity),
+                State::Running { velocity, .. } => *velocity = new_velocity,
+            }
+            self.flip = new_velocity < 0.;
         } else {
             self.state = State::Idle;
+        }
+    }
+
+    pub fn update(&mut self, delta_time: Duration, _grid: &Grid<Cell>) {
+        match &mut self.state {
+            State::Idle => (),
+            State::Running {
+                velocity,
+                animation,
+            } => {
+                animation.update(delta_time);
+                self.position.x += *velocity * delta_time.as_secs_f32();
+            }
         }
     }
 
     pub fn draw(&self, images: &Images) {
         let image = match &self.state {
             State::Idle => &images.idle,
-            State::Running { animation } => &images.running[animation.current_frame],
+            State::Running { animation, .. } => &images.running[animation.current_frame],
         };
         let pos = (self.position * TILE_SIZE).as_vector_i32() + images.top_left;
-        image.draw(pos);
+        let flip = if self.flip {
+            Flip::FlippedX
+        } else {
+            Flip::Unflipped
+        };
+        image.draw_with_flip(pos, flip);
     }
 }
 
@@ -93,12 +112,14 @@ fn horizontal_input(buttons: ButtonState) -> i32 {
 
 enum State {
     Idle,
-    Running { animation: Animation },
+    Running { velocity: f32, animation: Animation },
+    // AirBorne { velocity: Vector },
 }
 
 impl State {
-    fn running() -> Self {
+    fn start_running(velocity: f32) -> Self {
         Self::Running {
+            velocity,
             animation: Animation::new(RUN_ANIMATION_LEN, ANIMATION_FPS),
         }
     }
