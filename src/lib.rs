@@ -119,8 +119,8 @@ impl Game {
     fn draw(&mut self) {
         crankit_graphics::clear(Color::black());
         self.player.draw(&self.player_images);
-        self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
         self.level_image.draw([0, 0]);
+        self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
         self.water.draw(&self.water_images);
         #[cfg(feature = "draw-fps")]
         crankit_graphics::draw_fps([0, 0]);

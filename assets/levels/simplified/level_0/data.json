@@ -5,11 +5,13 @@
 	"y": 0,
 	"width": 400,
 	"height": 240,
-	"bgColor": "#696A79",
+	"bgColor": "#000000",
 	"neighbourLevels": [],
 	"customFields" : {},
 	"layers": [
-		"environment.png"
+		"background.png",
+		"environment.png",
+		"decorations.png"
 	],
 	"entities": {
 		"player": [
