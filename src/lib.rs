@@ -76,8 +76,8 @@ impl Game {
 
     fn draw(&mut self) {
         crankit_graphics::clear(Color::black());
-        self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
         self.player.draw(&self.player_images);
+        self.lifts.iter().for_each(|l| l.draw(&self.lift_image));
         self.level_image.draw([0, 0]);
     }
 
