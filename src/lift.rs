@@ -1,6 +1,9 @@
+use libm::fabsf;
+
 use collision::Aabb;
 use crankit_graphics::image::Image;
 
+use crate::player::Player;
 use crate::{IVector, Vector, TILE_SIZE};
 
 #[derive(Debug)]
@@ -17,7 +20,15 @@ const IMAGE_TOP_LEFT: IVector = IVector::new(-24, -240);
 const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -1.);
 
 /// Bottom-right of the collision box relative to the lift position
-const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -0.5);
+const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, 2.0);
+
+/// Top-left of the interaction box relative to the lift position
+const INTERACTION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -2.);
+
+/// Bottom-right of the interaction box relative to the lift position
+const INTERACTION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -1.);
+
+const SPEED_FACTOR: f32 = 0.1;
 
 impl Lift {
     pub fn new(base: Vector, height: f32) -> Self {
@@ -28,8 +39,18 @@ impl Lift {
         }
     }
 
-    pub fn _lift(&mut self, amount: f32) {
-        self.current = (self.current + amount).min(self.height);
+    pub fn update(&mut self, crank_speed: f32, player: &mut Player) {
+        let previous = self.current;
+        self.current = (self.current + fabsf(crank_speed) * SPEED_FACTOR).clamp(0.0, self.height);
+        player.move_by(Vector::new(0.0, previous - self.current))
+    }
+
+    pub fn interaction_box(&self) -> Aabb {
+        let pos = self.position();
+        Aabb::from_min_max(
+            pos + INTERACTION_BOX_TOP_LEFT,
+            pos + INTERACTION_BOX_BOTTOM_RIGHT,
+        )
     }
 
     pub fn collision_box(&self) -> Aabb {

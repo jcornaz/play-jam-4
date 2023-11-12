@@ -9,7 +9,7 @@ use playdate_sys::println;
 use collision::Aabb;
 use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
-use crankit_input::button_state;
+use crankit_input::{button_state, crank_change};
 use crankit_time::reset_elapsed_time;
 use grid::Grid;
 use level::{Cell, Level};
@@ -36,7 +36,7 @@ struct Game {
     player: Player,
     grid: Grid<Cell>,
     lifts: Vec<Lift>,
-    active_lift: Option<Lift>,
+    active_lift: Option<usize>,
 }
 
 impl crankit_game_loop::Game for Game {
@@ -73,7 +73,21 @@ impl Game {
         let buttons = button_state();
         self.player.handle_input(buttons);
         self.player.update(delta_time);
+        let player_collision_box = self.player.collision_box();
         self.resolve_collisions();
+        if let Some(lift) = self.active_lift.map(|i| &mut self.lifts[i]) {
+            if player_collision_box.collides(lift.interaction_box()) {
+                lift.update(crank_change(), &mut self.player);
+            } else {
+                self.active_lift = None;
+            }
+        } else if let Some(index) = (0..self.lifts.len()).find(|i| {
+            self.lifts[*i]
+                .interaction_box()
+                .collides(player_collision_box)
+        }) {
+            self.active_lift = Some(index);
+        }
     }
 
     fn draw(&mut self) {
@@ -89,7 +103,7 @@ impl Game {
             iter += 1;
             if iter > PENETRATION_RESOLUTION_MAX_ITER {
                 println!(
-                    "Exhausted number of iteration for collision detection resolution ({})",
+                    "Exhausted number of iteration for inter-penetration resolution ({})",
                     PENETRATION_RESOLUTION_MAX_ITER
                 );
                 return;

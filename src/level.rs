@@ -96,7 +96,7 @@ mod ldtk {
     impl From<Lift> for (Vector, f32) {
         fn from(value: Lift) -> Self {
             let base = value.position / TILE_SIZE;
-            let height = base.y - (value.custom_fields.arrival.cy / TILE_SIZE);
+            let height = base.y - value.custom_fields.arrival.cy - 1.;
             (base, height)
         }
     }
