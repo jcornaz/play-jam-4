@@ -6,13 +6,15 @@ use crankit_graphics::image::Image;
 use crankit_input::{Button, ButtonState};
 use grid::Grid;
 
-use crate::{animation::Animation, level::Cell, Vector, TILE_SIZE};
+use crate::{animation::Animation, level::Cell, IVector, Vector, TILE_SIZE};
 
 const RUN_SPEED: f32 = 5.;
 const ANIMATION_FPS: f32 = 10.0;
 const RUN_ANIMATION_LEN: usize = 4;
 
 pub struct Images {
+    /// Vector from the origin of the player to the top-left of the images
+    top_left: IVector,
     idle: Image,
     running: [Image; RUN_ANIMATION_LEN],
 }
@@ -31,7 +33,13 @@ impl Images {
         ];
         let _falling = images.next().unwrap();
         let _dying = images.next().unwrap();
-        Ok(Self { idle, running })
+        let [w, h] = idle.size();
+        let top_left = IVector::new(-w / 2, -h);
+        Ok(Self {
+            idle,
+            running,
+            top_left,
+        })
     }
 }
 
@@ -68,9 +76,8 @@ impl Player {
             State::Idle => &images.idle,
             State::Running { animation } => &images.running[animation.current_frame],
         };
-        let [w, h] = image.size();
-        let pos = (self.position * TILE_SIZE).as_vector_i32() - math2d::Vector::new(w, h) / 2;
-        image.draw_from_center(pos);
+        let pos = (self.position * TILE_SIZE).as_vector_i32() + images.top_left;
+        image.draw(pos);
     }
 }
 

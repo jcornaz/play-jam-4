@@ -16,6 +16,7 @@ use level::{Cell, Level};
 use player::Player;
 
 type Vector = math2d::Vector<f32>;
+type IVector = math2d::Vector<i32>;
 
 const TILE_SIZE: f32 = 16.0;
 
