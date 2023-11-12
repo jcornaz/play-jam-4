@@ -25,24 +25,24 @@ impl Aabb {
         Some(if abs(x) < abs(y) { [x, 0.] } else { [0., y] })
     }
 
-    /// Returns the minimum non-zero penetration of [self] against the [others] shapes.
+    /// Returns the maximum penetration of [self] against the [others] shapes.
     ///
-    /// Returns `None` if self does not penetrate any other shape.
+    /// Returns `None` if [self] does not penetrate any of the [others] shapes.
     #[cfg(any(feature = "std", feature = "libm"))]
-    pub fn min_penetration(self, others: impl IntoIterator<Item = Aabb>) -> Option<[f32; 2]> {
-        let mut min_magnitude = f32::MAX;
-        let mut min = None;
+    pub fn max_penetration(self, others: impl IntoIterator<Item = Aabb>) -> Option<[f32; 2]> {
+        let mut max_magnitude = f32::MIN;
+        let mut max = None;
         others
             .into_iter()
             .filter_map(move |other| self.penetration(other))
             .for_each(|p| {
                 let magnitude = abs(p[0]) + abs(p[1]);
-                if magnitude < min_magnitude {
-                    min_magnitude = magnitude;
-                    min = Some(p);
+                if magnitude > max_magnitude {
+                    max_magnitude = magnitude;
+                    max = Some(p);
                 }
             });
-        min
+        max
     }
 }
 

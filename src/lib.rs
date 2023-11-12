@@ -63,7 +63,7 @@ fn collides_against_terrain(grid: &Grid<Cell>, bounding_box: Aabb) -> Option<Vec
     let terrain = coords(bounding_box)
         .filter(|c| matches!(grid.get(*c), Some(Cell::Terrain)))
         .map(|[x, y]| Aabb::from_min_max([x as f32, y as f32], [(x + 1) as f32, (y + 1) as f32]));
-    bounding_box.min_penetration(terrain).map(Into::into)
+    bounding_box.max_penetration(terrain).map(Into::into)
 }
 
 game_loop!(Game);
