@@ -38,6 +38,10 @@ crate-type = [
     "staticlib", # for hardware
 ]
 
+[features]
+default = []
+draw-fps = []
+
 [dependencies]
 crankit-input = { path = "crankit/input" }
 crankit-graphics = { path = "crankit/graphics" }

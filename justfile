@@ -9,7 +9,7 @@ verify: test lint
 
 # Run the game from sources
 run:
-    cargo playdate run
+    cargo playdate run --features draw-fps
 
 # Watch the source files and run `just verify` when source changes
 watch:

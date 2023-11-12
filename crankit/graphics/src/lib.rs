@@ -76,6 +76,19 @@ pub fn draw_line(
     });
 }
 
+pub fn draw_fps(position: impl Into<[i32; 2]>) {
+    let [x, y] = position.into();
+    unsafe {
+        api()
+            .expect("playdate API not initialized")
+            .system
+            .as_ref()
+            .expect("cannot find playdate system")
+            .drawFPS
+            .unwrap()(x, y);
+    }
+}
+
 /// Error returned when trying to load an image that cannot be found in the pdx
 #[derive(Debug, Copy, Clone)]
 pub enum LoadError {
