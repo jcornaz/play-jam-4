@@ -40,7 +40,7 @@ impl Lift {
             base,
             key: Some(key),
             height,
-            current: 0.0,
+            current: (height - 1.0).max(0.0),
             active: false,
         }
     }
@@ -51,11 +51,32 @@ impl Lift {
 
     pub fn update(&mut self, delta_time: Duration, crank_speed: f32, player: &mut Player) {
         if self.active {
-            let previous = self.current;
-            self.current =
-                (self.current + fabsf(crank_speed) * SPEED_FACTOR).clamp(0.0, self.height);
-            player.move_by(Vector::new(0.0, previous - self.current))
+            self.move_up(crank_speed, player);
+        } else {
+            match self.key {
+                None => self.move_down(delta_time),
+                Some(key) => self.collide_key(player, key),
+            }
         }
+    }
+
+    fn collide_key(&mut self, player: &mut Player, key: Vector) {
+        if Aabb::from_min_max(key, key + Vector::new(1., 1.)).collides(player.collision_box()) {
+            self.key = None;
+        }
+    }
+
+    fn move_down(&mut self, delta_time: Duration) {
+        if self.current >= self.height {
+            return;
+        }
+        self.current = (self.current - delta_time.as_secs_f32() * 2.0).max(0.0)
+    }
+
+    fn move_up(&mut self, crank_speed: f32, player: &mut Player) {
+        let previous = self.current;
+        self.current = (self.current + fabsf(crank_speed) * SPEED_FACTOR).clamp(0.0, self.height);
+        player.move_by(Vector::new(0.0, previous - self.current))
     }
 
     pub fn interaction_box(&self) -> Aabb {

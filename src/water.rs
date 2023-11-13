@@ -31,7 +31,7 @@ pub struct Water {
     level: f32,
 }
 
-const RAISE_SPEED: f32 = 0.3;
+const RAISE_SPEED: f32 = 0.0;
 
 /// Offset of the image relative to the level
 const IMAGE_OFFSET: i32 = 7;
