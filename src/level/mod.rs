@@ -37,6 +37,14 @@ impl Level {
         }
     }
 
+    pub fn is_over(&self) -> bool {
+        self.player.position().y <= 0.01
+    }
+
+    pub fn next(self) -> Option<Self> {
+        Some(Definition::load(self.definition.num + 1).ok()?.into())
+    }
+
     pub fn draw(&self, images: &Images) {
         self.definition
             .background
@@ -133,22 +141,24 @@ fn coords(bounding_box: Aabb) -> impl Iterator<Item = [usize; 2]> {
 
 #[derive(Clone)]
 pub struct Definition {
+    pub num: u8,
     pub background: [Image; 2],
     pub foreground: [Image; 2],
     pub player_start: Vector,
     pub grid: Grid<Cell>,
-    pub lifts: Vec<(Vector, Vector, f32)>,
+    pub lifts: Vec<(Vector, Option<Vector>, f32)>,
 }
 
 impl Definition {
-    pub fn load(num: usize) -> anyhow::Result<Self> {
-        let (background, foreground) =
-            Self::load_images(num).map_err(|err| anyhow!("failed to load level images: {err}"))?;
-        let data = ldtk::Data::load(num)?;
+    pub fn load(num: u8) -> anyhow::Result<Self> {
+        let (background, foreground) = Self::load_images(num as usize)
+            .map_err(|err| anyhow!("failed to load level images: {err}"))?;
+        let data = ldtk::Data::load(num as usize)?;
         let player_start = data.entities.player[0] / TILE_SIZE;
-        let grid = ldtk::load_grid(num, data.width / 16, data.height / 16)?;
+        let grid = ldtk::load_grid(num as usize, data.width / 16, data.height / 16)?;
         let lifts = data.entities.lifts.into_iter().map(Into::into).collect();
         Ok(Self {
+            num,
             background,
             foreground,
             player_start,

@@ -10,13 +10,15 @@ use crate::TILE_SIZE;
 
 use super::Cell;
 
-const RAW_DATA: &[&str] = &[include_str!(
-    "../../assets/levels/simplified/level_0/data.json"
-)];
+const RAW_DATA: &[&str] = &[
+    include_str!("../../assets/levels/simplified/level_0/data.json"),
+    include_str!("../../assets/levels/simplified/level_1/data.json"),
+];
 
-const RAW_INT_GRIDS: &[&str] = &[include_str!(
-    "../../assets/levels/simplified/level_0/foreground.csv"
-)];
+const RAW_INT_GRIDS: &[&str] = &[
+    include_str!("../../assets/levels/simplified/level_0/foreground.csv"),
+    include_str!("../../assets/levels/simplified/level_1/foreground.csv"),
+];
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Data {
@@ -51,11 +53,16 @@ pub struct Lift {
     pub custom_fields: LiftCustomFields,
 }
 
-impl From<Lift> for (Vector, Vector, f32) {
+impl From<Lift> for (Vector, Option<Vector>, f32) {
     fn from(value: Lift) -> Self {
         let base = value.position / TILE_SIZE;
-        let key = value.custom_fields.key.into();
-        let height = base.y - value.custom_fields.arrival.cy - 1.;
+        let key = value.custom_fields.key.map(Into::into);
+        let height = base.y
+            - value
+                .custom_fields
+                .arrival
+                .map(|p| p.cy - 1.)
+                .unwrap_or_default();
         (base, key, height)
     }
 }
@@ -63,8 +70,8 @@ impl From<Lift> for (Vector, Vector, f32) {
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct LiftCustomFields {
-    pub arrival: Point,
-    pub key: Point,
+    pub arrival: Option<Point>,
+    pub key: Option<Point>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

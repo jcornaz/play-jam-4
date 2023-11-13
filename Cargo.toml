@@ -30,11 +30,16 @@ bundle-id = "com.github.jcornaz.play-jam-4"
 "img/levels/level_0/background_deco.png" = "assets/levels/simplified/level_0/background_deco.png"
 "img/levels/level_0/foreground.png" = "assets/levels/simplified/level_0/foreground.png"
 "img/levels/level_0/foreground_deco.png" = "assets/levels/simplified/level_0/foreground_deco.png"
+"img/levels/level_1/background.png" = "assets/levels/simplified/level_1/background.png"
+"img/levels/level_1/background_deco.png" = "assets/levels/simplified/level_1/background_deco.png"
+"img/levels/level_1/foreground.png" = "assets/levels/simplified/level_1/foreground.png"
+"img/levels/level_1/foreground_deco.png" = "assets/levels/simplified/level_1/foreground_deco.png"
 "img/player-sheet.png" = "assets/player-sheet.png"
 "img/lift.png" = "assets/lift.png"
 "img/water/body.png" = "assets/water.png"
 "img/water/surface.png" = "assets/water-surface.png"
 "img/key.png" = "assets/key.png"
+"img/thanks.png" = "assets/thanks.png"
 
 [lib]
 crate-type = [

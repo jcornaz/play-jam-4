@@ -35,18 +35,22 @@ const INTERACTION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -1.);
 const SPEED_FACTOR: f32 = 0.01;
 
 impl Lift {
-    pub fn new(base: Vector, key: Vector, height: f32) -> Self {
+    pub fn new(base: Vector, key: Option<Vector>, height: f32) -> Self {
         Self {
             base,
-            key: Some(key),
+            key,
             height,
-            current: (height - 1.0).max(0.0),
+            current: if key.is_none() {
+                0.0
+            } else {
+                (height - 1.0).max(0.0)
+            },
             active: false,
         }
     }
 
     pub fn set_active(&mut self, active: bool) {
-        self.active = active;
+        self.active = active && self.key.is_none();
     }
 
     pub fn update(&mut self, delta_time: Duration, crank_speed: f32, player: &mut Player) {

@@ -31,13 +31,13 @@ pub struct Water {
     level: f32,
 }
 
-const RAISE_SPEED: f32 = 0.0;
+const RAISE_SPEED: f32 = 0.2;
 
 /// Offset of the image relative to the level
 const IMAGE_OFFSET: i32 = 7;
 impl Water {
     pub fn new() -> Self {
-        Self { level: 0.5 }
+        Self { level: 0.0 }
     }
 
     pub fn update(&mut self, delta_time: Duration) {

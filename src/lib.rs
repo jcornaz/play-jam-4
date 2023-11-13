@@ -58,7 +58,8 @@ impl Images {
 
 struct Game {
     images: Images,
-    level: Level,
+    thank_you_image: Image,
+    level: Option<Level>,
     #[cfg(feature = "draw-fps")]
     frame_durations: Vec<Duration>,
 }
@@ -70,9 +71,11 @@ impl crankit_game_loop::Game for Game {
     fn new() -> Self {
         let level = Definition::load(0).unwrap().into();
         let images = Images::load().unwrap();
+        let thank_you_image = Image::load("img/thanks").unwrap();
         Self {
             images,
-            level,
+            thank_you_image,
+            level: Some(level),
             #[cfg(feature = "draw-fps")]
             frame_durations: Vec::with_capacity(FRAME_WINDOW),
         }
@@ -95,14 +98,24 @@ impl crankit_game_loop::Game for Game {
 
 impl Game {
     fn update(&mut self, delta_time: Duration) {
-        let buttons = button_state();
-        let crank_change = crank_change();
-        self.level.update(delta_time, buttons, crank_change);
+        if let Some(level) = &mut self.level {
+            let buttons = button_state();
+            let crank_change = crank_change();
+            level.update(delta_time, buttons, crank_change);
+            if level.is_over() {
+                self.level = self.level.take().and_then(|l| l.next());
+            }
+        }
     }
 
     fn draw(&mut self) {
-        crankit_graphics::clear(Color::black());
-        self.level.draw(&self.images);
+        match &self.level {
+            None => self.thank_you_image.draw([0, 0]),
+            Some(level) => {
+                crankit_graphics::clear(Color::black());
+                level.draw(&self.images)
+            }
+        }
         #[cfg(feature = "draw-fps")]
         crankit_graphics::draw_fps([0, 0]);
     }
