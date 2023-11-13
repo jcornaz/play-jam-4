@@ -57,12 +57,11 @@ impl From<Lift> for (Vector, Option<Vector>, f32) {
     fn from(value: Lift) -> Self {
         let base = value.position / TILE_SIZE;
         let key = value.custom_fields.key.map(Into::into);
-        let height = base.y
-            - value
-                .custom_fields
-                .arrival
-                .map(|p| p.cy - 1.)
-                .unwrap_or_default();
+        let height = value
+            .custom_fields
+            .arrival
+            .map(|p| base.y - p.cy - 1.)
+            .unwrap_or_default();
         (base, key, height)
     }
 }

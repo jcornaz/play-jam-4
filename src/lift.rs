@@ -1,6 +1,7 @@
 use core::time::Duration;
 
 use libm::fabsf;
+use playdate_sys::println;
 
 use collision::Aabb;
 use crankit_graphics::image::Image;
@@ -11,6 +12,7 @@ use crate::{IVector, Vector, TILE_SIZE};
 #[derive(Debug)]
 pub struct Lift {
     base: Vector,
+    can_be_active: bool,
     key: Option<Vector>,
     height: f32,
     current: f32,
@@ -38,6 +40,7 @@ impl Lift {
     pub fn new(base: Vector, key: Option<Vector>, height: f32) -> Self {
         Self {
             base,
+            can_be_active: key.is_some(),
             key,
             height,
             current: if key.is_none() {
@@ -50,7 +53,7 @@ impl Lift {
     }
 
     pub fn set_active(&mut self, active: bool) {
-        self.active = active && self.key.is_none();
+        self.active = self.can_be_active && active && self.key.is_none();
     }
 
     pub fn update(&mut self, delta_time: Duration, crank_speed: f32, player: &mut Player) {
