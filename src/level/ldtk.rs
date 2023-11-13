@@ -41,8 +41,6 @@ pub struct Entities {
     pub player: [Vector; 1],
     #[serde(rename = "lift")]
     pub lifts: Vec<Lift>,
-    #[serde(rename = "key")]
-    pub keys: Vec<Vector>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -53,23 +51,32 @@ pub struct Lift {
     pub custom_fields: LiftCustomFields,
 }
 
-impl From<Lift> for (Vector, f32) {
+impl From<Lift> for (Vector, Vector, f32) {
     fn from(value: Lift) -> Self {
         let base = value.position / TILE_SIZE;
+        let key = value.custom_fields.key.into();
         let height = base.y - value.custom_fields.arrival.cy - 1.;
-        (base, height)
+        (base, key, height)
     }
 }
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct LiftCustomFields {
-    pub arrival: ArrivalPoint,
+    pub arrival: Point,
+    pub key: Point,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct ArrivalPoint {
+pub struct Point {
+    pub cx: f32,
     pub cy: f32,
+}
+
+impl From<Point> for Vector {
+    fn from(Point { cx, cy }: Point) -> Self {
+        Vector::new(cx, cy)
+    }
 }
 
 pub fn load_grid(level_num: usize, width: usize, height: usize) -> anyhow::Result<Grid<Cell>> {

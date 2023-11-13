@@ -11,7 +11,7 @@
 	"iid": "9031b1e0-6280-11ee-bd14-d37c27752299",
 	"jsonVersion": "1.4.1",
 	"appBuildId": 472138,
-	"nextUid": 196,
+	"nextUid": 198,
 	"identifierStyle": "Lowercase",
 	"toc": [],
 	"worldLayout": "Free",
@@ -41,37 +41,6 @@
 	"customCommands": [],
 	"flags": [],
 	"defs": { "layers": [
-		{
-			"__type": "Entities",
-			"identifier": "keys",
-			"type": "Entities",
-			"uid": 195,
-			"doc": null,
-			"uiColor": null,
-			"gridSize": 16,
-			"guideGridWid": 0,
-			"guideGridHei": 0,
-			"displayOpacity": 1,
-			"inactiveOpacity": 0.6,
-			"hideInList": false,
-			"hideFieldsWhenInactive": true,
-			"canSelectWhenInactive": true,
-			"renderInWorldView": true,
-			"pxOffsetX": 0,
-			"pxOffsetY": 0,
-			"parallaxFactorX": 0,
-			"parallaxFactorY": 0,
-			"parallaxScaling": true,
-			"requiredTags": ["objective"],
-			"excludedTags": [],
-			"intGridValues": [],
-			"intGridValuesGroups": [],
-			"autoRuleGroups": [],
-			"autoSourceLayerDefUid": null,
-			"tilesetDefUid": null,
-			"tilePivotX": 0,
-			"tilePivotY": 0
-		},
 		{
 			"__type": "Entities",
 			"identifier": "player",
@@ -1086,11 +1055,46 @@
 					"canBeNull": false,
 					"arrayMinLength": null,
 					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
+					"editorDisplayMode": "PointStar",
 					"editorDisplayScale": 1,
 					"editorDisplayPos": "Above",
 					"editorLinkStyle": "StraightArrow",
 					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Key",
+					"doc": null,
+					"__type": "Point",
+					"uid": 196,
+					"type": "F_Point",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "PointStar",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "ZigZag",
+					"editorDisplayColor": "#FEE761",
 					"editorAlwaysShow": false,
 					"editorShowInWorld": true,
 					"editorCutLongValues": true,
@@ -1146,40 +1150,6 @@
 			"pivotX": 0.5,
 			"pivotY": 1,
 			"fieldDefs": []
-		},
-		{
-			"identifier": "key",
-			"uid": 154,
-			"tags": ["objective"],
-			"exportToToc": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#733E39",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 1,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 1, "x": 256, "y": 64, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0.5,
-			"pivotY": 0.5,
-			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -1227,64 +1197,6 @@
 			"externalRelPath": null,
 			"fieldInstances": [],
 			"layerInstances": [
-				{
-					"__identifier": "keys",
-					"__type": "Entities",
-					"__cWid": 25,
-					"__cHei": 15,
-					"__gridSize": 16,
-					"__opacity": 1,
-					"__pxTotalOffsetX": 0,
-					"__pxTotalOffsetY": 0,
-					"__tilesetDefUid": null,
-					"__tilesetRelPath": null,
-					"iid": "49eb9dd0-6280-11ee-99ef-31f0357545ee",
-					"levelId": 0,
-					"layerDefUid": 195,
-					"pxOffsetX": 0,
-					"pxOffsetY": 0,
-					"visible": true,
-					"optionalRules": [],
-					"intGridCsv": [],
-					"autoLayerTiles": [],
-					"seed": 3012838,
-					"overrideTilesetUid": null,
-					"gridTiles": [],
-					"entityInstances": [
-						{
-							"__identifier": "key",
-							"__grid": [10,10],
-							"__pivot": [0.5,0.5],
-							"__tags": ["objective"],
-							"__tile": { "tilesetUid": 1, "x": 256, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#733E39",
-							"__worldX": 168,
-							"__worldY": 168,
-							"iid": "4fe6aef0-6280-11ee-99ef-8be6bded5bca",
-							"width": 16,
-							"height": 16,
-							"defUid": 154,
-							"px": [168,168],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "key",
-							"__grid": [18,5],
-							"__pivot": [0.5,0.5],
-							"__tags": ["objective"],
-							"__tile": { "tilesetUid": 1, "x": 256, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#733E39",
-							"__worldX": 296,
-							"__worldY": 88,
-							"iid": "321d0df0-6280-11ee-981e-a739ad12718b",
-							"width": 16,
-							"height": 16,
-							"defUid": 154,
-							"px": [296,88],
-							"fieldInstances": []
-						}
-					]
-				},
 				{
 					"__identifier": "player",
 					"__type": "Entities",
@@ -1365,10 +1277,16 @@
 							"height": 48,
 							"defUid": 144,
 							"px": [344,208],
-							"fieldInstances": [{ "__identifier": "Arrival", "__type": "Point", "__value": { "cx": 21, "cy": 3 }, "__tile": null, "defUid": 146, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["21,3"]
-							}] }]
+							"fieldInstances": [
+								{ "__identifier": "Arrival", "__type": "Point", "__value": { "cx": 21, "cy": 3 }, "__tile": null, "defUid": 146, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["21,3"]
+								}] },
+								{ "__identifier": "Key", "__type": "Point", "__value": { "cx": 10, "cy": 10 }, "__tile": null, "defUid": 196, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["10,10"]
+								}] }
+							]
 						},
 						{
 							"__identifier": "lift",
@@ -1384,10 +1302,16 @@
 							"height": 48,
 							"defUid": 144,
 							"px": [72,112],
-							"fieldInstances": [{ "__identifier": "Arrival", "__type": "Point", "__value": { "cx": 4, "cy": 0 }, "__tile": null, "defUid": 146, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["4,0"]
-							}] }]
+							"fieldInstances": [
+								{ "__identifier": "Arrival", "__type": "Point", "__value": { "cx": 4, "cy": 0 }, "__tile": null, "defUid": 146, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["4,0"]
+								}] },
+								{ "__identifier": "Key", "__type": "Point", "__value": { "cx": 18, "cy": 5 }, "__tile": null, "defUid": 196, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["18,5"]
+								}] }
+							]
 						}
 					]
 				},

@@ -9,6 +9,7 @@ use crate::{IVector, Vector, TILE_SIZE};
 #[derive(Debug)]
 pub struct Lift {
     base: Vector,
+    key: Option<Vector>,
     height: f32,
     current: f32,
 }
@@ -31,9 +32,10 @@ const INTERACTION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, -1.);
 const SPEED_FACTOR: f32 = 0.01;
 
 impl Lift {
-    pub fn new(base: Vector, height: f32) -> Self {
+    pub fn new(base: Vector, key: Vector, height: f32) -> Self {
         Self {
             base,
+            key: Some(key),
             height,
             current: 0.0,
         }
@@ -61,9 +63,12 @@ impl Lift {
         )
     }
 
-    pub fn draw(&self, image: &Image) {
+    pub fn draw(&self, lift_image: &Image, key_image: &Image) {
         let pos = (self.position() * TILE_SIZE).as_vector_i32() + IMAGE_TOP_LEFT;
-        image.draw(pos);
+        lift_image.draw(pos);
+        if let Some(key) = self.key.map(|p| (p * TILE_SIZE).as_vector_i32()) {
+            key_image.draw(key);
+        }
     }
 
     fn position(&self) -> Vector {

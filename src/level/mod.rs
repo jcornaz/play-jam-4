@@ -19,7 +19,6 @@ pub struct Level {
     player: Player,
     water: Water,
     lifts: Vec<Lift>,
-    keys: Vec<Vector>,
     active_lift: Option<usize>,
 }
 
@@ -54,12 +53,9 @@ impl Level {
             .iter()
             .for_each(|i| i.draw([0, 0]));
         self.player.draw(&images.player);
-        self.lifts.iter().for_each(|l| l.draw(&images.lift));
-        self.keys
+        self.lifts
             .iter()
-            .copied()
-            .map(|p| (p * TILE_SIZE).as_vector_i32())
-            .for_each(|p| images.key.draw_from_center(p));
+            .for_each(|l| l.draw(&images.lift, &images.key));
         self.definition
             .foreground
             .iter()
@@ -126,14 +122,12 @@ impl From<Definition> for Level {
             .lifts
             .iter()
             .copied()
-            .map(|(base, height)| Lift::new(base, height))
+            .map(|(base, key, height)| Lift::new(base, key, height))
             .collect();
-        let keys = definition.keys.clone();
         Self {
             definition,
             player,
             lifts,
-            keys,
             active_lift: None,
             water: Water::new(),
         }
@@ -154,8 +148,7 @@ pub struct Definition {
     pub foreground: [Image; 2],
     pub player_start: Vector,
     pub grid: Grid<Cell>,
-    pub lifts: Vec<(Vector, f32)>,
-    pub keys: Vec<Vector>,
+    pub lifts: Vec<(Vector, Vector, f32)>,
 }
 
 impl Definition {
@@ -166,19 +159,12 @@ impl Definition {
         let player_start = data.entities.player[0] / TILE_SIZE;
         let grid = ldtk::load_grid(num, data.width / 16, data.height / 16)?;
         let lifts = data.entities.lifts.into_iter().map(Into::into).collect();
-        let keys = data
-            .entities
-            .keys
-            .into_iter()
-            .map(|v| v / TILE_SIZE)
-            .collect();
         Ok(Self {
             background,
             foreground,
             player_start,
             grid,
             lifts,
-            keys,
         })
     }
 
