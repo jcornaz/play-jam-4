@@ -1,7 +1,6 @@
 use core::time::Duration;
 
 use libm::fabsf;
-use playdate_sys::println;
 
 use collision::Aabb;
 use crankit_graphics::image::Image;
@@ -26,7 +25,7 @@ const IMAGE_TOP_LEFT: IVector = IVector::new(-24, -240);
 const COLLISION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -1.);
 
 /// Bottom-right of the collision box relative to the lift position
-const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, 2.0);
+const COLLISION_BOX_BOTTOM_RIGHT: Vector = Vector::new(1.5, 0.5);
 
 /// Top-left of the interaction box relative to the lift position
 const INTERACTION_BOX_TOP_LEFT: Vector = Vector::new(-1.5, -2.);
@@ -74,9 +73,6 @@ impl Lift {
     }
 
     fn move_down(&mut self, delta_time: Duration) {
-        if self.current >= self.height {
-            return;
-        }
         self.current = (self.current - delta_time.as_secs_f32() * 2.0).max(0.0)
     }
 
