@@ -19,7 +19,6 @@ pub struct Level {
     player: Player,
     water: Water,
     lifts: Vec<Lift>,
-    active_lift: Option<usize>,
 }
 
 impl Level {
@@ -28,19 +27,10 @@ impl Level {
         self.player.update(delta_time);
         let player_collision_box = self.player.collision_box();
         self.resolve_collisions();
-        if let Some(lift) = self.active_lift.map(|i| &mut self.lifts[i]) {
-            if player_collision_box.collides(lift.interaction_box()) {
-                lift.update(crank_change, &mut self.player);
-            } else {
-                self.active_lift = None;
-            }
-        } else if let Some(index) = (0..self.lifts.len()).find(|i| {
-            self.lifts[*i]
-                .interaction_box()
-                .collides(player_collision_box)
-        }) {
-            self.active_lift = Some(index);
-        }
+        self.lifts.iter_mut().for_each(|lift| {
+            lift.set_active(lift.interaction_box().collides(player_collision_box));
+            lift.update(delta_time, crank_change, &mut self.player);
+        });
         self.water.update(delta_time);
         if self.collides_against_hazard() {
             *self = self.definition.clone().into();
@@ -128,7 +118,6 @@ impl From<Definition> for Level {
             definition,
             player,
             lifts,
-            active_lift: None,
             water: Water::new(),
         }
     }

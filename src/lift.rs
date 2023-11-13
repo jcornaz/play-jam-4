@@ -1,3 +1,5 @@
+use core::time::Duration;
+
 use libm::fabsf;
 
 use collision::Aabb;
@@ -12,6 +14,7 @@ pub struct Lift {
     key: Option<Vector>,
     height: f32,
     current: f32,
+    active: bool,
 }
 
 /// Position of the top left-corner of the image relative to the lift position
@@ -38,13 +41,21 @@ impl Lift {
             key: Some(key),
             height,
             current: 0.0,
+            active: false,
         }
     }
 
-    pub fn update(&mut self, crank_speed: f32, player: &mut Player) {
-        let previous = self.current;
-        self.current = (self.current + fabsf(crank_speed) * SPEED_FACTOR).clamp(0.0, self.height);
-        player.move_by(Vector::new(0.0, previous - self.current))
+    pub fn set_active(&mut self, active: bool) {
+        self.active = active;
+    }
+
+    pub fn update(&mut self, delta_time: Duration, crank_speed: f32, player: &mut Player) {
+        if self.active {
+            let previous = self.current;
+            self.current =
+                (self.current + fabsf(crank_speed) * SPEED_FACTOR).clamp(0.0, self.height);
+            player.move_by(Vector::new(0.0, previous - self.current))
+        }
     }
 
     pub fn interaction_box(&self) -> Aabb {
