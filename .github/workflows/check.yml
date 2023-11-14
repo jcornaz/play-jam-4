@@ -46,7 +46,7 @@ jobs:
         with:
           tool: just@1
       - run: cargo install playdate-bindgen --features cli
-      - run: just package --release
+      - run: cargo playdate package --release
       - run: zip -r lift-up.zip ./target/release/playdate
       - uses: actions/upload-artifact@v3
         with:
