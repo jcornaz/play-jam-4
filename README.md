@@ -1,6 +1,6 @@
 # LiftUp!
 
-This is a tiny tiny game made for the play-jam 4. You can download it here: https://jomag.itch.io/liftup
+This is a tiny tiny [playdate](https://play.date/) game made for the [play-jam 4](https://itch.io/jam/playjam-4). You can download it here: https://jomag.itch.io/liftup
 
 You play a mouse trying to escape the water by talking lifts. Better hurry cause the water is rising!
 
