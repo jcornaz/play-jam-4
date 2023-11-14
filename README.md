@@ -4,7 +4,7 @@ This is a tiny tiny [playdate](https://play.date/) game made for the [play-jam 4
 
 You play a mouse trying to escape the water by talking lifts. Better hurry cause the water is rising!
 
-But you must first collect the key to unlock the next lift.
+But you must first collect the keys to unlock each lift.
 
 ### Controls
 
