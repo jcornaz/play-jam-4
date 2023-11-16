@@ -143,9 +143,9 @@ checksum = "9b269fa71535e79f46ad39dd4872d887ff3b2ade56500cae9ac9c9d78fa6be2d"
 
 [[package]]
 name = "playdate-sys"
-version = "0.2.10"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3767ccc7cae1b23bb2b311cba005ffe80c69cbf1ffdab8173d456fa188e91ff5"
+checksum = "0c5f739eb918bae720fba4a0ef5394bd858c317d0506933587b407a739b59512"
 dependencies = [
  "arrayvec",
  "playdate-bindgen-cfg",
