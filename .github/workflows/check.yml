@@ -25,33 +25,6 @@ jobs:
           tool: cargo-hack@0.6,just@1,cargo-msrv@0.15,cargo-deny@0.14
       - run: cargo install playdate-bindgen --features cli
       - run: just verify
-  package:
-    strategy:
-      fail-fast: ${{ github.event_name == 'pull_request' }}
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@nightly
-        with:
-          components: clippy, rustfmt
-          targets: thumbv7em-none-eabihf
-      - uses: pd-rs/get-playdate-sdk@0.3.3
-        with:
-          version: 2.0.3
-      - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: just@1
-      - run: cargo install playdate-bindgen --features cli
-      - run: cargo playdate package --release
-      - run: zip -r lift-up.zip ./target/release/playdate
-      - uses: actions/upload-artifact@v3
-        with:
-          name: lift-up-${{ matrix.os }}.zip
-          path: lift-up.zip
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 10
