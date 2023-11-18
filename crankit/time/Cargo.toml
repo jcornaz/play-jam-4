@@ -6,5 +6,9 @@ edition = "2021"
 repository = "https://github.com/jcornaz/play-jam-4"
 description = "Ergonomic time API for the playdate"
 
+[features]
+default = ["playdate-sys-v02"]
+playdate-sys-v02 = ["dep:playdate-sys-v02"]
+
 [dependencies]
-playdate-sys = { version = "0.2.11", default-features = false }
+playdate-sys-v02 = { package = "playdate-sys", version = "0.2.11", default-features = false, optional = true }

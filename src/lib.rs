@@ -6,6 +6,7 @@ extern crate alloc;
 use alloc::vec::Vec;
 use core::time::Duration;
 use crankit_input::{ButtonsStateSource, CrankStateSource};
+use crankit_time::ElapsedTime;
 use playdate_sys::ffi::PlaydateAPI;
 
 use anyhow::anyhow;
@@ -14,7 +15,6 @@ use playdate_sys::println;
 
 use crankit_game_loop::game_loop;
 use crankit_graphics::{image::Image, Color};
-use crankit_time::reset_elapsed_time;
 use level::Definition;
 
 use crate::level::Level;
@@ -83,12 +83,12 @@ impl crankit_game_loop::Game for Game {
     }
 
     fn update(&mut self, playdate: &PlaydateAPI) {
-        let delta_time = reset_elapsed_time();
+        let delta_time = playdate.reset_elapsed_time();
         self.update(delta_time, playdate);
         self.draw();
         #[cfg(feature = "draw-fps")]
         {
-            self.frame_durations.push(crankit_time::elapsed_time());
+            self.frame_durations.push(playdate.elapsed_time());
             if self.frame_durations.len() >= FRAME_WINDOW {
                 let max_duration = self.frame_durations.drain(0..).max().unwrap_or_default();
                 println!("(max) frame duration: {max_duration:?}")
