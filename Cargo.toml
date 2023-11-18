@@ -1,6 +1,5 @@
 [workspace]
 members = [
-    "crankit/input",
     "crankit/graphics",
     "crankit/time",
     "crankit/game-loop",
@@ -52,7 +51,7 @@ default = []
 draw-fps = []
 
 [dependencies]
-crankit-input = { path = "crankit/input" }
+crankit-input = "0.2.0"
 crankit-graphics = { path = "crankit/graphics" }
 crankit-time = { path = "crankit/time" }
 crankit-game-loop = { path = "crankit/game-loop" }

@@ -10,9 +10,8 @@ use anyhow::anyhow;
 #[cfg(feature = "draw-fps")]
 use playdate_sys::println;
 
-use crankit_game_loop::game_loop;
+use crankit_game_loop::{game_loop, Playdate};
 use crankit_graphics::{image::Image, Color};
-use crankit_input::{button_state, crank_change};
 use crankit_time::reset_elapsed_time;
 use level::Definition;
 
@@ -68,7 +67,7 @@ struct Game {
 const FRAME_WINDOW: usize = 30;
 
 impl crankit_game_loop::Game for Game {
-    fn new() -> Self {
+    fn new(_: &Playdate) -> Self {
         let level = Definition::load(0).unwrap().into();
         let images = Images::load().unwrap();
         let thank_you_image = Image::load("img/thanks").unwrap();
@@ -81,9 +80,9 @@ impl crankit_game_loop::Game for Game {
         }
     }
 
-    fn update(&mut self) {
+    fn update(&mut self, playdate: &Playdate) {
         let delta_time = reset_elapsed_time();
-        self.update(delta_time);
+        self.update(delta_time, playdate);
         self.draw();
         #[cfg(feature = "draw-fps")]
         {
@@ -97,10 +96,10 @@ impl crankit_game_loop::Game for Game {
 }
 
 impl Game {
-    fn update(&mut self, delta_time: Duration) {
+    fn update(&mut self, delta_time: Duration, playdate: &Playdate) {
         if let Some(level) = &mut self.level {
-            let buttons = button_state();
-            let crank_change = crank_change();
+            let buttons = playdate.input.buttons_state();
+            let crank_change = playdate.input.crank_change();
             level.update(delta_time, buttons, crank_change);
             if level.is_over() {
                 self.level = self.level.take().and_then(|l| l.next());

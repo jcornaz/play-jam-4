@@ -7,7 +7,7 @@ use playdate_sys::println;
 
 use collision::Aabb;
 use crankit_graphics::{image::Image, LoadError};
-use crankit_input::ButtonState;
+use crankit_input::ButtonsState;
 use grid::Grid;
 
 use crate::{lift::Lift, player::Player, water::Water, Images, Vector, TILE_SIZE};
@@ -22,7 +22,7 @@ pub struct Level {
 }
 
 impl Level {
-    pub fn update(&mut self, delta_time: Duration, buttons: ButtonState, crank_change: f32) {
+    pub fn update(&mut self, delta_time: Duration, buttons: ButtonsState, crank_change: f32) {
         self.player.handle_input(buttons);
         self.player.update(delta_time);
         let player_collision_box = self.player.collision_box();

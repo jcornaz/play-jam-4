@@ -4,7 +4,7 @@ use anyhow::anyhow;
 
 use collision::Aabb;
 use crankit_graphics::image::{Flip, Image};
-use crankit_input::{Button, ButtonState};
+use crankit_input::{Button, ButtonsState};
 
 use crate::{animation::Animation, IVector, Vector, TILE_SIZE};
 
@@ -70,7 +70,7 @@ impl Player {
         }
     }
 
-    pub fn handle_input(&mut self, buttons: ButtonState) {
+    pub fn handle_input(&mut self, buttons: ButtonsState) {
         let jump = buttons.is_just_pressed(Button::A);
         if jump && self.is_on_ground {
             self.velocity.y = -JUMP_VELOCITY;
@@ -144,7 +144,7 @@ impl Player {
     }
 }
 
-fn horizontal_speed_input(buttons: ButtonState) -> f32 {
+fn horizontal_speed_input(buttons: ButtonsState) -> f32 {
     if buttons.is_pressed(Button::Right) {
         RUN_SPEED
     } else if buttons.is_pressed(Button::Left) {

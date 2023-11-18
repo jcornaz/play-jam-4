@@ -41,6 +41,7 @@ dependencies = [
 name = "crankit-game-loop"
 version = "0.0.0"
 dependencies = [
+ "crankit-input",
  "playdate-sys",
 ]
 
@@ -54,10 +55,11 @@ dependencies = [
 
 [[package]]
 name = "crankit-input"
-version = "0.0.0"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb7710bbb5f5565cd2e709c6dcb0253892229eaf454d7a1fb6073fbdb8ce4171"
 dependencies = [
  "playdate-sys",
- "rstest",
 ]
 
 [[package]]
