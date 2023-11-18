@@ -50,12 +50,14 @@ macro_rules! game_loop {
             ) -> $crate::ffi::EventLoopCtrl {
                 if event == $crate::ffi::SystemEvent::kEventInit {
                     unsafe {
-                        let playdate = $crate::Playdate::from_c_api(api.as_ref());
+                        let playdate: $crate::Playdate<'static> =
+                            $crate::Playdate::from_c_api(api.as_ref());
                         GAME = Some($crate::Game::new(&playdate));
                         (*playdate.c_api.system).setUpdateCallback.unwrap()(
                             Some(update),
                             core::ptr::null_mut(),
                         );
+                        PLAYDATE = Some(playdate);
                     }
                 }
                 $crate::ffi::EventLoopCtrl::Continue
