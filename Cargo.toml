@@ -50,7 +50,7 @@ default = []
 draw-fps = []
 
 [dependencies]
-crankit-input = "0.3.0"
+crankit-input = "0.3.1"
 crankit-graphics = { path = "crankit/graphics" }
 crankit-time = "0.1.0"
 crankit-game-loop = { path = "crankit/game-loop" }
