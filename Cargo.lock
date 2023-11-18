@@ -63,7 +63,9 @@ dependencies = [
 
 [[package]]
 name = "crankit-time"
-version = "0.0.0"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b497712c62ea3d6ab07e2e2e762899ed766ac9882bdd2e50493c544169c98c39"
 dependencies = [
  "playdate-sys",
 ]
