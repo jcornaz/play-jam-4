@@ -54,18 +54,18 @@ dependencies = [
 
 [[package]]
 name = "crankit-input"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08b02352a0950e325096e31315f2415d2f2853f0a75d51e740f84c6d5708af51"
+checksum = "cf7fc2465020ea1ca65b0ffdf8f77d4ecdf09787c4b27e775e123e9167d062db"
 dependencies = [
  "playdate-sys",
 ]
 
 [[package]]
 name = "crankit-time"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b497712c62ea3d6ab07e2e2e762899ed766ac9882bdd2e50493c544169c98c39"
+checksum = "239838081cfade3231e89f16a3f055eacf8b0d1b93575bc28625f0894b1cc9cc"
 dependencies = [
  "playdate-sys",
 ]
