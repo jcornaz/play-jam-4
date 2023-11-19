@@ -1,7 +1,3 @@
-use core::ptr;
-
-use playdate_sys::ffi::{LCDColor, LCDSolidColor};
-
 /// A color that can be used when drawing
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Color {
@@ -52,17 +48,6 @@ pub enum Solid {
     Xor,
 }
 
-impl From<Solid> for LCDSolidColor {
-    fn from(value: Solid) -> Self {
-        match value {
-            Solid::Black => LCDSolidColor::kColorBlack,
-            Solid::White => LCDSolidColor::kColorWhite,
-            Solid::Clear => LCDSolidColor::kColorClear,
-            Solid::Xor => LCDSolidColor::kColorXOR,
-        }
-    }
-}
-
 /// A 8x8 Pattern used for drawing
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Pattern([u8; 16]);
@@ -98,9 +83,8 @@ impl From<Pattern> for Color {
     }
 }
 
-pub(super) fn with_lcd_color<T>(color: impl Into<Color>, action: impl FnOnce(LCDColor) -> T) -> T {
-    match color.into() {
-        Color::Solid(solid) => action(LCDSolidColor::from(solid) as LCDColor),
-        Color::Pattern(pattern) => action(ptr::addr_of!(pattern.0) as LCDColor),
+impl From<Pattern> for [u8; 16] {
+    fn from(Pattern(data): Pattern) -> Self {
+        data
     }
 }

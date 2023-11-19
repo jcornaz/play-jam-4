@@ -2,14 +2,17 @@
 
 pub mod color;
 pub mod image;
+mod interop {
+    pub(crate) mod playdate_sys_v02;
+}
 
 extern crate alloc;
 
 use core::ptr;
 
-use color::with_lcd_color;
 pub use color::Color;
 use image::Image;
+use interop::playdate_sys_v02::with_lcd_color;
 use playdate_sys::api;
 
 pub struct Rect {

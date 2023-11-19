@@ -7,8 +7,7 @@ use core::{
 
 use playdate_sys::ffi::{LCDBitmap, LCDBitmapDrawMode, LCDBitmapFlip};
 
-use crate::{color::with_lcd_color, Color};
-use crate::{gfx, with_draw_context, LoadError};
+use crate::{gfx, with_draw_context, Color, LoadError};
 
 /// An image that can be loaded from file ([`ImageOwned::from_path`) or created in memory ([`ImageOwned::from_size`]) to be drawn on screen.
 pub struct Image {
@@ -156,7 +155,7 @@ impl Image {
     /// Panic if the playdate API was not initialized (see: [`Playdate::init`](crate::Playdate::init))
     pub fn from_size_and_color(size: impl Into<[i32; 2]>, color: impl Into<Color>) -> Self {
         let [w, h] = size.into();
-        let ptr = with_lcd_color(color, |color| unsafe {
+        let ptr = crate::with_lcd_color(color, |color| unsafe {
             gfx().newBitmap.unwrap()(w, h, color)
         });
         Self { ptr }
