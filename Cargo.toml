@@ -52,7 +52,7 @@ draw-fps = []
 [dependencies]
 crankit-input = "0.3.2"
 crankit-graphics = { path = "crankit/graphics" }
-crankit-time = "0.1.0"
+crankit-time = "0.1.1"
 crankit-game-loop = { path = "crankit/game-loop" }
 timer = { path = "timer" }
 grid = { path = "grid", default-features = false }
