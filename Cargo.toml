@@ -59,7 +59,7 @@ grid = { path = "grid", default-features = false }
 math2d = { path = "math2d", default-features = false, features = ["libm", "serde"] }
 collision = { path = "collision", default-features = false, features = ["libm"] }
 playdate-sys = { version = "0.2.11", default-features = false, features = ["lang-items", "entry-point"] }
-serde = { version = "1.0.192", default-features = false, features = ["derive"] }
+serde = { version = "1.0.193", default-features = false, features = ["derive"] }
 serde_json = { version = "1.0.108", default-features = false, features = ["alloc"] }
 anyhow = { version = "1.0.75", default-features = false }
 libm = "0.2.8"
