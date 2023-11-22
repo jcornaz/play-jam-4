@@ -15,7 +15,7 @@ serde = ["dep:serde"]
 
 [dependencies]
 libm = { version = "0.2.8", optional = true }
-serde = { version = "1.0.192", default-features = false, features = ["derive"], optional = true }
+serde = { version = "1.0.193", default-features = false, features = ["derive"], optional = true }
 
 [dev-dependencies]
 rstest = { version = "0.18.2", default-features = false }
