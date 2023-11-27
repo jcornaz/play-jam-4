@@ -140,9 +140,9 @@ dependencies = [
 
 [[package]]
 name = "playdate-bindgen-cfg"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b269fa71535e79f46ad39dd4872d887ff3b2ade56500cae9ac9c9d78fa6be2d"
+checksum = "8cf6e70e7d40dd7741637f6ecd751a7b342ff657242f099c6e243b8ff1989ee3"
 
 [[package]]
 name = "playdate-sys"
@@ -156,9 +156,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.69"
+version = "1.0.70"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "134c189feb4956b20f6f547d2cf727d4c0fe06722b20a0eec87ed445a97f92da"
+checksum = "39278fbbf5fb4f646ce651690877f89d1c5811a3d4acb27700c1cb3cdb78fd3b"
 dependencies = [
  "unicode-ident",
 ]
