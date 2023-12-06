@@ -57,6 +57,9 @@ name = "crankit-input"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b3b7b54ba99352c47f4ca88e190f43e9ccdb8b1620cdd5c81438f07755de002"
+dependencies = [
+ "playdate-sys",
+]
 
 [[package]]
 name = "crankit-time"
